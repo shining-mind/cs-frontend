@@ -8,5 +8,4 @@ export default interface DoublyLinkedList<T> {
   head: DoublyLinkedListItem<T> | null;
   tail: DoublyLinkedListItem<T> | null;
   add(value: T): this;
-  [Symbol.iterator](): Iterator<T, void>;
 }

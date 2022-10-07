@@ -1,6 +1,6 @@
 import DoublyLinkedList, { DoublyLinkedListItem } from './DoublyLinkedList';
 
-export default class ConcreteDoublyLinkedList<T> implements DoublyLinkedList<T> {
+export default class ConcreteDoublyLinkedList<T> implements DoublyLinkedList<T>, Iterable<T> {
   head: DoublyLinkedListItem<T> | null = null;
 
   tail: DoublyLinkedListItem<T> | null = null;
@@ -22,11 +22,21 @@ export default class ConcreteDoublyLinkedList<T> implements DoublyLinkedList<T> 
     return this;
   }
 
-  * [Symbol.iterator](): Iterator<T, void> {
-    let item = this.head;
+  * values(reverse: boolean = false): Iterator<T> {
+    let item = reverse ? this.tail : this.head;
     while (item) {
       yield item.data;
-      item = item.next;
+      item = reverse ? item.prev : item.next;
     }
+  }
+
+  reversed(): Iterable<T> {
+    return {
+      [Symbol.iterator]: () => this.values(true),
+    };
+  }
+
+  [Symbol.iterator](): Iterator<T> {
+    return this.values();
   }
 }

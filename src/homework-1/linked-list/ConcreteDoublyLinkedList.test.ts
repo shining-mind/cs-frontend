@@ -16,4 +16,8 @@ describe('ConcreteDoublyLinkedList', () => {
   test('iterator', () => {
     expect(Array.from(list)).toEqual([1, 2, 3]);
   });
+
+  test('reverse iterator', () => {
+    expect(Array.from(list.reversed())).toEqual([3, 2, 1]);
+  });
 });

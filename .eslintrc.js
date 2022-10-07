@@ -11,6 +11,9 @@ module.exports = {
   parserOptions: {
     project: './tsconfig.json',
   },
+  rules: {
+    'no-restricted-syntax': 'off',
+  },
   plugins: [
     '@typescript-eslint'
   ],
