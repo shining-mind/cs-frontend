@@ -2,19 +2,19 @@ import ConcreteDoublyLinkedList from '../linked-list/ConcreteDoublyLinkedList';
 import Queue from './Queue';
 
 export default class ConcreteQueue<T> implements Queue<T> {
-  #list = new ConcreteDoublyLinkedList<T>();
+  protected list = new ConcreteDoublyLinkedList<T>();
 
   get head(): T | null {
-    return this.#list.head?.data || null;
+    return this.list.head?.data || null;
   }
 
   push(data: T) {
-    this.#list.add(data);
+    this.list.add(data);
     return this;
   }
 
   pop(): T {
-    const data = this.#list.shift();
+    const data = this.list.shift();
     if (data === null) {
       throw new Error('Empty queue');
     }
@@ -22,6 +22,6 @@ export default class ConcreteQueue<T> implements Queue<T> {
   }
 
   flush(): void {
-    this.#list = new ConcreteDoublyLinkedList<T>();
+    this.list = new ConcreteDoublyLinkedList<T>();
   }
 }
