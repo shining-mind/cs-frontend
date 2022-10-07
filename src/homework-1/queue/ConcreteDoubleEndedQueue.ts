@@ -14,11 +14,7 @@ export default class ConcreteDoubleEndedQueue<T>
   }
 
   shift(): T {
-    const data = this.list.shift();
-    if (data === null) {
-      throw new Error('Empty queue');
-    }
-    return data;
+    return super.pop();
   }
 
   pop(): T {
