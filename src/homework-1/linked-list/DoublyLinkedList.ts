@@ -8,4 +8,6 @@ export default interface DoublyLinkedList<T> {
   head: DoublyLinkedListItem<T> | null;
   tail: DoublyLinkedListItem<T> | null;
   add(value: T): this;
+  shift(): T | null;
+  pop(): T | null;
 }

@@ -6,11 +6,11 @@ export default class ConcreteDoublyLinkedList<T> implements DoublyLinkedList<T>,
   #tail: DoublyLinkedListItem<T> | null = null;
 
   get head() {
-    return this.#head;
+    return Object.freeze(this.#head);
   }
 
   get tail() {
-    return this.#tail;
+    return Object.freeze(this.#tail);
   }
 
   add(data: T): this {
@@ -21,13 +21,46 @@ export default class ConcreteDoublyLinkedList<T> implements DoublyLinkedList<T>,
     };
     if (this.#head === null) {
       this.#head = item;
-    }
-    if (this.#tail !== null) {
+    } else if (this.#tail !== null) {
       this.#tail.next = item;
     }
     this.#tail = item;
 
     return this;
+  }
+
+  shift() {
+    const item = this.#head;
+    if (item === null) {
+      return null;
+    }
+    // reset tail if list has only one item
+    if (this.#head === this.#tail) {
+      this.#tail = null;
+    }
+    // move head to next item
+    this.#head = item.next;
+    if (this.#head) {
+      this.#head.prev = null;
+    }
+    return item.data;
+  }
+
+  pop() {
+    const item = this.#tail;
+    if (item === null) {
+      return null;
+    }
+    // reset head if list has only one item
+    if (this.#head === this.#tail) {
+      this.#head = null;
+    }
+    // move tail to prev item
+    this.#tail = item.prev;
+    if (this.#tail) {
+      this.#tail.next = null;
+    }
+    return item.data;
   }
 
   * values(reverse: boolean = false): Iterator<T> {
