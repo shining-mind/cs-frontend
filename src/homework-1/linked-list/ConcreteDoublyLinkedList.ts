@@ -13,6 +13,21 @@ export default class ConcreteDoublyLinkedList<T> implements DoublyLinkedList<T>,
     return Object.freeze(this.#tail);
   }
 
+  unshift(data: T): this {
+    const item = {
+      data,
+      prev: null,
+      next: this.#head,
+    };
+    if (this.#tail === null) {
+      this.#tail = item;
+    } else if (this.#head !== null) {
+      this.#head.prev = item;
+    }
+    this.#head = item;
+    return this;
+  }
+
   add(data: T): this {
     const item = {
       data,
