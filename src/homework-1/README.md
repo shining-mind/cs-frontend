@@ -25,4 +25,4 @@
 
 ## Полезные ссылки
 
-- Нагладное представление и визуализация работы структур данных, URL: [https://visualgo.net/en/list](https://visualgo.net/en/list)
+- Наглядное представление и визуализация работы структур данных, URL: [https://visualgo.net/en/list](https://visualgo.net/en/list)
