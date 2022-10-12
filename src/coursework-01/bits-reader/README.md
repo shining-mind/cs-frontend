@@ -66,6 +66,15 @@ bitReader.read(1) // 1
 bitReader.seek(1, true)
 ```
 
+**Итератор по N-битовым числам:**
+
+```JS
+const buffer = new Uint8Array([0b11100111, 0b01111001, 0b10011110]);
+const bitReader = new UintBitsReader(buffer);
+const numbers = Array.from(bitReader.values(3)); // [0b111, 0b100, 0b111, 0b100, 0b111, 0b100, 0b111, 0b100]
+
+```
+
 ## Ограничения
 
 1. UintBitsReader работает только с целыми числами

@@ -106,4 +106,24 @@ export default class UintBitsReader {
     }
     return result;
   }
+
+  values(bits: number): IterableIterator<number> {
+    const instance = this;
+    if ((this.uint8View.byteLength * BITS_IN_BYTE) % bits !== 0) {
+      throw new TypeError(`Bytes can't be devided by ${bits} bits`);
+    }
+    return {
+      [Symbol.iterator]() {
+        return this;
+      },
+      next() {
+        if (instance.byte !== undefined) {
+          return { value: instance.read(bits), done: false };
+        }
+        // rewind bitstream on iterator end
+        instance.rewind();
+        return { value: undefined, done: true };
+      },
+    };
+  }
 }
