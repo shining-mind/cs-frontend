@@ -64,6 +64,12 @@ describe('bits-reader', () => {
       expect(() => bitReader.read(1)).toThrowError('Reached bitstream end');
     });
 
+    test('read uint32', () => {
+      const buffer = new Uint8Array([0x98, 0x3f, 0x01, 0x00]);
+      const bitReader = new UintBitsReader(buffer);
+      expect(bitReader.read(32)).toEqual(81816);
+    });
+
     test('should throw if nothing to read', () => {
       const buffer = new Uint8Array([]);
       const bitReader = new UintBitsReader(buffer);
