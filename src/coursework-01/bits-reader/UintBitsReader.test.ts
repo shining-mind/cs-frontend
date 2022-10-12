@@ -70,7 +70,15 @@ describe('bits-reader', () => {
       expect(bitReader.read(32)).toEqual(81816);
     });
 
-    test('should throw if nothing to read', () => {
+    test('rewind', () => {
+      const buffer = new Uint8Array([0xff, 0xff]);
+      const bitReader = new UintBitsReader(buffer);
+      expect(bitReader.read(16)).toEqual(65535);
+      bitReader.rewind();
+      expect(bitReader.read(8)).toEqual(255);
+    });
+
+    test('should throw if there is nothing to read', () => {
       const buffer = new Uint8Array([]);
       const bitReader = new UintBitsReader(buffer);
       expect(() => bitReader.read(1)).toThrowError('Reached bitstream end');
@@ -80,6 +88,12 @@ describe('bits-reader', () => {
       const buffer = new Uint8Array([0xff]);
       const bitReader = new UintBitsReader(buffer);
       expect(() => bitReader.read(33)).toThrowError('Unsupported bit count');
+    });
+
+    test('should throw on position overflow', () => {
+      const buffer = new Uint8Array([0xff, 0xff]);
+      const bitReader = new UintBitsReader(buffer);
+      expect(() => bitReader.read(17)).toThrowError('Reached bitstream end');
     });
   });
 });

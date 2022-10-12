@@ -73,37 +73,43 @@ export default class UintBitsReader {
    * @param bits
    * @returns Uint
    */
-  read(bits: number) {
+  read(bits: number): number {
     let result = 0;
     let resultSize = 0;
-    if (this.byte === undefined) {
-      throw new Error('Reached bitstream end');
-    }
     if (bits < 1 || bits > 32) {
       throw new TypeError('Unsupported bit count');
     }
     while (bits > 0) {
-      let currentBits = 0;
-      let bitsRead = bits >= BITS_IN_BYTE ? BITS_IN_BYTE : bits;
-      if (this.bitRemainder > 0) {
-        currentBits = skipBits(this.byte, BITS_IN_BYTE - this.bitRemainder, BITS_IN_BYTE);
-        if (bitsRead > this.bitRemainder) {
-          bitsRead = this.bitRemainder;
+      if (this.assertNotEOF()) {
+        let currentBits = 0;
+        let bitsRead = bits >= BITS_IN_BYTE ? BITS_IN_BYTE : bits;
+        if (this.bitRemainder > 0) {
+          currentBits = skipBits(this.byte, BITS_IN_BYTE - this.bitRemainder, BITS_IN_BYTE);
+          if (bitsRead > this.bitRemainder) {
+            bitsRead = this.bitRemainder;
+          }
+          currentBits = takeBits(currentBits, bitsRead);
+          this.bitRemainder -= bitsRead;
+        } else {
+          currentBits = takeBits(this.byte, bitsRead, BITS_IN_BYTE);
+          this.bitRemainder = BITS_IN_BYTE - bitsRead;
         }
-        currentBits = takeBits(currentBits, bitsRead);
-        this.bitRemainder -= bitsRead;
-      } else {
-        currentBits = takeBits(this.byte, bitsRead, BITS_IN_BYTE);
-        this.bitRemainder = BITS_IN_BYTE - bitsRead;
-      }
-      bits -= bitsRead;
-      result |= currentBits << resultSize;
-      resultSize += bitsRead;
-      // Go to next byte if nothing left
-      if (this.bitRemainder === 0) {
-        this.seek(1);
+        bits -= bitsRead;
+        result |= currentBits << resultSize;
+        resultSize += bitsRead;
+        // Go to next byte if nothing left
+        if (this.bitRemainder === 0) {
+          this.seek(1);
+        }
       }
     }
     return result;
+  }
+
+  protected assertNotEOF(): this is { byte: number } {
+    if (this.byte === undefined) {
+      throw new Error('Reached bitstream end');
+    }
+    return true;
   }
 }
