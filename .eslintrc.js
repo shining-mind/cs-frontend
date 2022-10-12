@@ -24,5 +24,11 @@ module.exports = {
         jest: true,
       },
     },
+    {
+      files: ['./src/coursework-01/bits-reader/**/*.ts'],
+      rules: {
+        'no-bitwise': 'off',
+      }
+    }
   ],
 };

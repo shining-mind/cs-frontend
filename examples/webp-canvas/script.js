@@ -1,5 +1,11 @@
 // TODO: refactor WIP
 
+/**
+ * WEBP specs
+ * @see https://developers.google.com/speed/webp/docs/riff_container?hl=ru-ru
+ * @see https://developers.google.com/speed/webp/docs/webp_lossless_bitstream_specification
+ */
+
 const RIFF = 1179011410;
 const WEBP = 1346520407;
 const VP8 = 540561494;
