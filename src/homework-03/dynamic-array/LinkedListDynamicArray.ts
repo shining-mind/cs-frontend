@@ -11,7 +11,6 @@ export default class LinkedListDynamicArray<T> implements DynamicArray<T> {
   constructor(fixedArraySize: number) {
     this.#length = 0;
     this.#fixedArraySize = fixedArraySize;
-    this.grow();
   }
 
   get length(): number {
@@ -19,9 +18,8 @@ export default class LinkedListDynamicArray<T> implements DynamicArray<T> {
   }
 
   add(data: T): void {
-    // It is guaranteed that tail is not null
-    const arr = this.#list?.tail?.data as Array<T>;
-    if (arr[arr.length - 1] !== undefined) {
+    const arr = this.#list?.tail?.data;
+    if (!arr || arr[arr.length - 1] !== undefined) {
       this.grow();
       this.add(data);
     } else {
