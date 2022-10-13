@@ -74,4 +74,20 @@ describe('ConcreteDoublyLinkedList', () => {
     expect(Array.from(local)).toEqual([1, 2]);
     expect(Array.from(local.reversed())).toEqual([2, 1]);
   });
+
+  test('add after get head', () => {
+    const local = new ConcreteDoublyLinkedList<number>();
+    local.add(1);
+    expect(local.head?.data).toEqual(1);
+    local.add(2);
+    expect(local.tail?.data).toEqual(2);
+  });
+
+  test('add after get tail', () => {
+    const local = new ConcreteDoublyLinkedList<number>();
+    local.add(1);
+    expect(local.tail?.data).toEqual(1);
+    local.add(2);
+    expect(local.tail?.data).toEqual(2);
+  });
 });

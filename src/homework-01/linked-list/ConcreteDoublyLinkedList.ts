@@ -6,11 +6,11 @@ export default class ConcreteDoublyLinkedList<T> implements DoublyLinkedList<T>,
   #tail: DoublyLinkedListItem<T> | null = null;
 
   get head() {
-    return Object.freeze(this.#head);
+    return this.#head ? Object.freeze({ ...this.#head }) : null;
   }
 
   get tail() {
-    return Object.freeze(this.#tail);
+    return this.#tail ? Object.freeze({ ...this.#tail }) : null;
   }
 
   unshift(data: T): this {
