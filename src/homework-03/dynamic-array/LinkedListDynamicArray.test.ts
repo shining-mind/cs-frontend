@@ -13,4 +13,12 @@ describe('LinkedListDynamicArray', () => {
     expect(arr.get(1)).toEqual(2);
     expect(arr.get(4)).toEqual(5);
   });
+
+  test('iterator', () => {
+    const arr = new LinkedListDynamicArray(3);
+    arr.add(1);
+    arr.add(2);
+    arr.add(3);
+    expect(Array.from(arr)).toEqual([1, 2, 3]);
+  });
 });

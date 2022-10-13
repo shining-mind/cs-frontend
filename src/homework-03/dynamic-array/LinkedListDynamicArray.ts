@@ -1,7 +1,7 @@
 import ConcreteDoublyLinkedList from '../../homework-01/linked-list/ConcreteDoublyLinkedList';
 import DynamicArray from './DynamicArray';
 
-export default class LinkedListDynamicArray<T> implements DynamicArray<T> {
+export default class LinkedListDynamicArray<T> implements DynamicArray<T>, Iterable<T> {
   #length: number;
 
   #fixedArraySize: number;
@@ -31,6 +31,14 @@ export default class LinkedListDynamicArray<T> implements DynamicArray<T> {
   get(index: number): T | undefined {
     const array = this.findArrayForIndex(index);
     return array === null ? undefined : array[index % this.#fixedArraySize];
+  }
+
+  * [Symbol.iterator](): Iterator<T> {
+    for (const arr of this.#list) {
+      for (let i = 0; i < this.#fixedArraySize; i += 1) {
+        yield arr[i];
+      }
+    }
   }
 
   private findArrayForIndex(index: number): Array<T> | null {
