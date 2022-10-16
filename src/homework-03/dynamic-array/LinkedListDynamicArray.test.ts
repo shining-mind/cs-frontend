@@ -149,5 +149,11 @@ describe('LinkedListDynamicArray', () => {
       expect(Array.from(local)).toEqual([6, 1, 2, 10, 11, 12]);
       expect(local.length).toEqual(6);
     });
+
+    test('negative start', () => {
+      expect(arr.splice(-1, 1)).toEqual([12]);
+      expect(arr.length).toEqual(11);
+      expect(Array.from(arr)).toEqual(Array.from(range(1, 11)));
+    });
   });
 });

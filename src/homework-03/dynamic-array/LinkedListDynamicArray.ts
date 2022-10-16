@@ -38,7 +38,7 @@ export default class LinkedListDynamicArray<T> implements DynamicArray<T>, Itera
   // TODO: refactor
   splice(start: number, deleteCount: number, ...items: T[]): T[] {
     if (start < 0) {
-      throw new TypeError(`Invalid start parameter: ${start}`);
+      start = this.#length + start;
     }
     const canDelete = this.length - start;
     if (start >= this.#length) {
@@ -47,6 +47,7 @@ export default class LinkedListDynamicArray<T> implements DynamicArray<T>, Itera
     const availableForDelete = deleteCount < canDelete ? deleteCount : canDelete;
     // Prepare fixed array for removed values
     const removedValues = new Array<T>(availableForDelete);
+
     let empty = 0;
     let item = this.findListItemForIndex(start);
     let emptyFromIndex = -1;
@@ -73,6 +74,7 @@ export default class LinkedListDynamicArray<T> implements DynamicArray<T>, Itera
         index = 0;
       }
     }
+
     // ADD
     if (items.length > 0) {
       let lastItem = this.list.tail;
