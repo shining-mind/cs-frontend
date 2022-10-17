@@ -13,12 +13,8 @@ export default class ConcreteQueue<T> implements Queue<T> {
     return this;
   }
 
-  pop(): T {
-    const data = this.list.shift();
-    if (data === null) {
-      throw new Error('Empty queue');
-    }
-    return data;
+  pop(): T | null {
+    return this.list.shift();
   }
 
   flush(): void {

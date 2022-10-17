@@ -18,6 +18,6 @@ describe('ConcreteDoubleEndedQueue', () => {
     expect(queue.pop()).toEqual(12);
     expect(queue.shift()).toEqual(11);
     expect(queue.pop()).toEqual(10);
-    expect(() => queue.pop()).toThrowError();
+    expect(queue.pop()).toBeNull();
   });
 });
