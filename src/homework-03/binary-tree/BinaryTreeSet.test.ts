@@ -14,7 +14,7 @@ describe('BinaryTreeSet', () => {
     expect(Array.from(tree)).toEqual([3, 2, 4, 1, 5]);
   });
 
-  test('should delete items correctly', () => {
+  test('should delete items correctly #1', () => {
     const tree = new BinaryTreeSet<number>([], numberComparator);
     tree.add(3)
       .add(1)
@@ -58,6 +58,13 @@ describe('BinaryTreeSet', () => {
     //  /
     // -2
     expect(Array.from(tree)).toEqual([3, 1, 7, 0, 4, -2]);
+  });
+
+  test('should delete items correctly #2', () => {
+    const tree = new BinaryTreeSet<number>([7, 5, 2, 3, 4, 1], numberComparator);
+    expect(Array.from(tree)).toEqual([7, 5, 2, 1, 3, 4]);
+    expect(tree.delete(2)).toEqual(true);
+    expect(Array.from(tree)).toEqual([7, 5, 3, 1, 4]);
   });
 
   test('should find item by value', () => {

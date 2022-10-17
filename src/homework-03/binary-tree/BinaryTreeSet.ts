@@ -66,9 +66,9 @@ export default class BinaryTreeSet<T> implements Set<T> {
         node: childNode, diff: childDiff,
       } = this.findNodeForValue(node.left.value, node.right);
       if (childDiff === 1) {
-        childNode.right = node.left;
-      } else if (childDiff === -1) {
         childNode.left = node.left;
+      } else if (childDiff === -1) {
+        childNode.right = node.left;
       }
     }
 
