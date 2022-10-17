@@ -72,4 +72,27 @@ describe('BinaryTreeSet', () => {
     expect(tree.has(53)).toBeFalsy();
     expect(tree.has(98)).toBeTruthy();
   });
+
+  test('callback in forEach should be bound to binary tree by default', () => {
+    const tree = new BinaryTreeSet([1], numberComparator);
+    tree.forEach(function testForEach(value, value2, set) {
+      expect(value).toEqual(1);
+      expect(value2).toEqual(1);
+      expect(set).toEqual(tree);
+      // @ts-ignore
+      expect(this).toEqual(tree);
+    });
+  });
+
+  test('callback in forEach should be bound to passed argument', () => {
+    const tree = new BinaryTreeSet([1], numberComparator);
+    const context = {};
+    tree.forEach(function testForEach(value, value2, set) {
+      expect(value).toEqual(1);
+      expect(value2).toEqual(1);
+      expect(set).toEqual(tree);
+      // @ts-ignore
+      expect(this).toEqual(context);
+    }, context);
+  });
 });

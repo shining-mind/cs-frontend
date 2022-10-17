@@ -84,7 +84,7 @@ export default class BinaryTreeSet<T> implements Set<T> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   forEach(callbackfn: (value: T, value2: T, set: Set<T>) => void, thisArg?: unknown): void {
     for (const [v1, v2] of this.entries()) {
-      callbackfn(v1, v2, this);
+      callbackfn.call(thisArg || this, v1, v2, this);
     }
   }
 
