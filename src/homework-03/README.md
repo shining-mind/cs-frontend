@@ -16,4 +16,6 @@
 ## Отчет по работе
 
 Реализованы:
-- интерфейс DynamicArray и его реализация LinkedListDynamicArray
+- интерфейс DynamicArray и его реализации LinkedListDynamicArray, VectorDynamicArray
+- бинарное дерево - BinaryTreeSet
+- функция бинарного поиска по отсортированному массиву
