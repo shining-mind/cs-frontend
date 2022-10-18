@@ -34,7 +34,7 @@ export default function primeGenerator(
         value = prime;
         prime += 2;
       }
-      if (prime > max) {
+      if (value > max) {
         return { value: undefined, done: true };
       }
       return { value, done: false };
