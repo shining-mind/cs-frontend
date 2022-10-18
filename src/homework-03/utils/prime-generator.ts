@@ -29,7 +29,7 @@ export default function primeGenerator(
       let value = prime;
       if (prime === 2) {
         prime = 3;
-      } else if (prime >= 3) {
+      } else {
         while (!isPrime(prime)) prime += 2;
         value = prime;
         prime += 2;
