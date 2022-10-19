@@ -57,11 +57,17 @@ export default class BinaryTreeSet<T> implements Set<T> {
     if (diff !== 0) {
       return false;
     }
+    // Recreate tree on root delete
     if (parent === null) {
+      const values = this.values();
+      // Drop root value
+      values.next();
       this.clear();
-      return true;
-    }
-    if (node.right && node.left) {
+      for (const v of values) {
+        this.add(v);
+      }
+    // Otherwise rebalance the tree
+    } else if (node.right && node.left) {
       const {
         node: childNode, diff: childDiff,
       } = this.findNodeForValue(node.left.value, node.right);
@@ -71,11 +77,12 @@ export default class BinaryTreeSet<T> implements Set<T> {
         childNode.right = node.left;
       }
     }
-
-    if (parent.left === node) {
-      parent.left = node.right ?? node.left;
-    } else if (parent.right === node) {
-      parent.right = node.right ?? node.left;
+    if (parent) {
+      if (parent.left === node) {
+        parent.left = node.right ?? node.left;
+      } else if (parent.right === node) {
+        parent.right = node.right ?? node.left;
+      }
     }
 
     return true;
