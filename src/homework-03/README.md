@@ -19,3 +19,4 @@
 - интерфейс DynamicArray и его реализации LinkedListDynamicArray, VectorDynamicArray
 - бинарное дерево - BinaryTreeSet
 - функция бинарного поиска по отсортированному массиву
+- хэш-таблица с устранением коллизий методом цепочек
