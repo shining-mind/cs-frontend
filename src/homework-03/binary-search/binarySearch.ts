@@ -4,7 +4,7 @@
  * @param sortedArray Sorted array to search in
  */
 export default function binarySearch(value: number, sortedArray: number[]): number {
-  const m = Math.ceil(sortedArray.length / 2);
+  const m = Math.floor(sortedArray.length / 2);
   if (sortedArray[m] === value) {
     return m;
   }
@@ -16,5 +16,5 @@ export default function binarySearch(value: number, sortedArray: number[]): numb
     value,
     searchInLeftPart ? sortedArray.slice(0, m) : sortedArray.slice(m),
   );
-  return result > -1 ? result + (searchInLeftPart ? 0 : sortedArray.length - m) : result;
+  return result > -1 ? result + (searchInLeftPart ? 0 : m) : result;
 }
