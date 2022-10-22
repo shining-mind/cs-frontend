@@ -23,7 +23,7 @@ export default function utf16CharIterator(str: string): IterableIterator<string>
         const w2 = str.charCodeAt(i);
         if (w2 >= 0xDC00 && w2 <= 0xDFFF) {
           // Increment only if w2 is valid,
-          // otherwise it will be threated as w1 for next char
+          // otherwise it will be treated as w1 for next char
           i += 1;
           // eslint-disable-next-line no-bitwise
           const codePoint = (takeBits(w1, 10, 16) << 10) | takeBits(w2, 10, 16);
