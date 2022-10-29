@@ -7,7 +7,8 @@
     "test": "jest",
     "build": "npm run clean && tsc",
     "clean": "del-cli ./lib/*",
-    "example:webp-canvas": "parcel ./examples/webp-canvas/index.html --dist-dir ./examples/dist"
+    "example:webp-canvas": "parcel ./examples/webp-canvas/index.html --dist-dir ./examples/dist/webp-canvas",
+    "example:for-each": "parcel ./examples/for-each/index.html --dist-dir ./examples/dist/for-each"
   },
   "license": "ISC",
   "devDependencies": {

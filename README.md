@@ -13,3 +13,9 @@
 1. `npm run example:webp-canvas`
 2. Открыть в браузере страницу по адресу [http://localhost:1234/](http://localhost:1234/)
 3. Выбрать webp изображение
+
+
+### Неблокирующий forEach
+
+1. `npm run example:for-each`
+2. Открыть в браузере страницу по адресу [http://localhost:1234/](http://localhost:1234/)
