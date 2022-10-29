@@ -1,6 +1,6 @@
 export default function iterFilter<T>(
   iterable: Iterable<T>,
-  filterFunc: (item: T) => boolean,
+  predicate: (item: T) => boolean,
 ): IterableIterator<T> {
   const it = iterable[Symbol.iterator]();
   return {
@@ -12,7 +12,7 @@ export default function iterFilter<T>(
       if (done) {
         return { value: undefined, done };
       }
-      if (filterFunc(value)) {
+      if (predicate(value)) {
         return { value, done };
       }
       return this.next();
