@@ -1,7 +1,7 @@
 export default function iterTake<T>(
   iterable: Iterable<T>,
   limit: number,
-): IterableIterator<T | undefined> {
+): IterableIterator<T> {
   const it = iterable[Symbol.iterator]();
   let i = 1;
   return {
