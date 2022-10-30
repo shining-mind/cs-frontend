@@ -6,13 +6,11 @@ type ForEachOptions = {
   pauseTime?: number;
   onPause?: (index: number) => void;
   onContinue?: (index: number) => void;
+  signal?: AbortSignal;
 };
 
-// TODO: should implement Promise
 class ForEachWorker<T> {
   iterationStart!: number;
-
-  isCanceled: boolean = false;
 
   index: number = 0;
 
@@ -28,7 +26,7 @@ class ForEachWorker<T> {
     this.options = options;
     this.thread = (function* thread(this: ForEachWorker<T>): Generator<number> {
       for (const item of iterable) {
-        if (Date.now() - this.iterationStart > this.workTime) {
+        if (Date.now() - this.iterationStart > this.workTime || this.options.signal?.aborted) {
           // yield paused element index
           yield this.index;
           this.options.onContinue?.(this.index);
@@ -53,7 +51,7 @@ class ForEachWorker<T> {
   work(resolve: () => void, reject: () => void) {
     this.iterationStart = Date.now();
     const { value, done } = this.thread.next();
-    if (this.isCanceled) {
+    if (this.options.signal?.aborted) {
       reject();
     } else if (!done) {
       this.options.onPause?.(value);
