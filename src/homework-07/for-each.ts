@@ -48,16 +48,20 @@ class ForEachWorker<T> {
     return this.options.pauseTime || PAUSE_TIME;
   }
 
-  work(resolve: () => void, reject: () => void) {
+  work(resolve: () => void, reject: (error?: unknown) => void) {
     this.iterationStart = Date.now();
-    const { value, done } = this.thread.next();
-    if (this.options.signal?.aborted) {
-      reject();
-    } else if (!done) {
-      this.options.onPause?.(value);
-      setTimeout(this.work.bind(this, resolve, reject), this.pauseTime);
-    } else {
-      resolve();
+    try {
+      const { value, done } = this.thread.next();
+      if (this.options.signal?.aborted) {
+        reject();
+      } else if (!done) {
+        this.options.onPause?.(value);
+        setTimeout(this.work.bind(this, resolve, reject), this.pauseTime);
+      } else {
+        resolve();
+      }
+    } catch (error) {
+      reject(error);
     }
   }
 }

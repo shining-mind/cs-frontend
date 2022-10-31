@@ -30,4 +30,14 @@ describe('forEach', () => {
       expect(e).toBeUndefined();
     }
   });
+
+  test('should be rejected if callback throws', () => {
+    const promise = forEach(
+      new Array(10),
+      () => {
+        throw new Error();
+      },
+    );
+    return expect(promise).rejects.toBeInstanceOf(Error);
+  });
 });
