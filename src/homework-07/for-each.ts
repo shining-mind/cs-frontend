@@ -9,7 +9,7 @@ type ForEachOptions = {
   signal?: AbortSignal;
 };
 
-class ForEachWorker<T> {
+class ForEachWorker<T, I extends Iterable<T>> {
   iterationStart!: number;
 
   index: number = 0;
@@ -19,12 +19,12 @@ class ForEachWorker<T> {
   options: ForEachOptions;
 
   constructor(
-    iterable: Iterable<T>,
-    cb: (value: T, index: number) => void,
+    iterable: I,
+    cb: (value: T, index: number, iterable: I) => void,
     options: ForEachOptions,
   ) {
     this.options = options;
-    this.thread = (function* thread(this: ForEachWorker<T>): Generator<number> {
+    this.thread = (function* thread(this: ForEachWorker<T, I>): Generator<number> {
       for (const item of iterable) {
         if (Date.now() - this.iterationStart > this.workTime || this.options.signal?.aborted) {
           // yield paused element index
@@ -32,7 +32,7 @@ class ForEachWorker<T> {
           this.options.onContinue?.(this.index);
           this.iterationStart = Date.now();
         }
-        cb(item, this.index);
+        cb(item, this.index, iterable);
         this.index += 1;
       }
     }.call(this));
@@ -66,9 +66,9 @@ class ForEachWorker<T> {
   }
 }
 
-export default function forEach<T>(
-  iterable: Iterable<T>,
-  cb: (value: T, index: number) => void,
+export default function forEach<T, I extends Iterable<T>>(
+  iterable: I,
+  cb: (value: T, index: number, iterable: I) => void,
   options: ForEachOptions = {},
 ): Promise<void> {
   const worker = new ForEachWorker(iterable, cb, options);
