@@ -9,14 +9,12 @@ export default function iterZip(...iterables: Iterable<any>[]): IterableIterator
     },
     next() {
       const tuple = new Array(iterators.length);
-      let allDone = true;
-      for (let i = 0; i < iterators.length; i += 1) {
-        const { value, done } = iterators[i].next();
+      for (const [i, it] of iterators.entries()) {
+        const { value, done } = it.next();
+        if (done) {
+          return { value: undefined, done: true };
+        }
         tuple[i] = value;
-        allDone = allDone && done;
-      }
-      if (allDone) {
-        return { value: undefined, done: true };
       }
       return { value: tuple, done: false };
     },
