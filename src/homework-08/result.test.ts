@@ -25,17 +25,42 @@ describe('Result', () => {
     });
   });
 
-  test('should bind result', () => {
-    expect.assertions(1);
-    new Result(() => 10).bind((el) => Result.error(el)).catch((error) => {
-      expect(error).toEqual(10);
-    });
+  test('should bind error result', () => {
+    expect.assertions(3);
+    new Result(() => 10)
+      .bind((el) => Result.error(el))
+      .catch((error) => {
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toEqual('10');
+      })
+      .then(() => {
+        expect(true).toBeTruthy();
+      });
+  });
+
+  test('should bind scalar value', () => {
+    expect.assertions(2);
+    new Result(() => 10)
+      .bind((el) => el * 2)
+      .then((value) => {
+        expect(value).toEqual(20);
+      })
+      .then(() => {
+        expect(true).toBeTruthy();
+      });
   });
 
   test('result methods should chain', () => {
-    const result = new Result(() => 10);
-    result.map((el) => el * 2).bind((el) => Result.error(el)).catch((err) => {
-      expect(err).toEqual(20);
-    });
+    expect.assertions(3);
+    new Result(() => 10)
+      .map((el) => el * 2)
+      .bind((el) => Result.error(el))
+      .catch((error) => {
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toEqual('20');
+      })
+      .then(() => {
+        expect(true).toBeTruthy();
+      });
   });
 });
