@@ -11,4 +11,20 @@ describe('exec', () => {
       done();
     });
   });
+
+  test('exec with error', (done) => {
+    expect.assertions(1);
+    exec(function* run() {
+      const result = Result.error(10);
+      try {
+        yield result.then((el) => el);
+      } catch (error) {
+        if (error instanceof Error) {
+          expect(error.message).toEqual('10');
+        }
+      } finally {
+        done();
+      }
+    });
+  });
 });

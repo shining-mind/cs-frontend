@@ -14,14 +14,18 @@ export default function exec(
     if (done) {
       return;
     }
-    promise.then((data) => {
-      // Prevent stack overflow
-      if (count > 1e3) {
-        queueMicrotask(() => run(0, data));
-      } else {
-        run(count + 1, data);
-      }
-    });
+    promise
+      .then((data) => {
+        // Prevent stack overflow
+        if (count > 1e3) {
+          queueMicrotask(() => run(0, data));
+        } else {
+          run(count + 1, data);
+        }
+      })
+      .catch((error) => {
+        it.throw(error);
+      });
   };
   run(0, undefined);
 }
