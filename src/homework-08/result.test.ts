@@ -63,4 +63,48 @@ describe('Result', () => {
         expect(true).toBeTruthy();
       });
   });
+
+  test('chain map different types', () => {
+    expect.assertions(4);
+    new Result(() => 97)
+      .map((el) => String.fromCodePoint(el))
+      .map((el) => el.toUpperCase())
+      .then((el) => {
+        expect(el).toEqual('A');
+      })
+      .then(() => {
+        expect(true).toBeTruthy();
+      });
+    new Result(() => [1, 2, 3])
+      .map((el) => el.reduce((acc, x) => acc + x, 0))
+      .map((el) => el.toString())
+      .then((el) => {
+        expect(el).toEqual('6');
+      })
+      .then(() => {
+        expect(true).toBeTruthy();
+      });
+  });
+
+  test('chain bind different types', () => {
+    expect.assertions(4);
+    new Result(() => 97)
+      .bind((el) => String.fromCodePoint(el))
+      .bind((el) => el.toUpperCase())
+      .then((el) => {
+        expect(el).toEqual('A');
+      })
+      .then(() => {
+        expect(true).toBeTruthy();
+      });
+    new Result(() => [1, 2, 3])
+      .bind((el) => el.reduce((acc, x) => acc + x, 0))
+      .bind((el) => el.toString())
+      .then((el) => {
+        expect(el).toEqual('6');
+      })
+      .then(() => {
+        expect(true).toBeTruthy();
+      });
+  });
 });

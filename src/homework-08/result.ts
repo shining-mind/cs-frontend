@@ -53,7 +53,7 @@ export default class Result<T, Err extends Error | undefined = undefined> {
     });
   }
 
-  map(cb: (data: T) => T): Result<T> {
+  map<R>(cb: (data: T) => R): Result<R> {
     return new Result(() => {
       if (this.#error !== undefined) {
         throw this.#error;
@@ -61,7 +61,7 @@ export default class Result<T, Err extends Error | undefined = undefined> {
       if (this.#data !== undefined) {
         return cb(this.#data);
       }
-      return this.#data;
+      return undefined;
     });
   }
 
@@ -70,7 +70,7 @@ export default class Result<T, Err extends Error | undefined = undefined> {
    * @param cb
    * @returns
    */
-  bind<B, E extends Error | undefined>(cb: (data: T) => ResultInput<B, E>): Result<B | T, E> {
+  bind<B, E extends Error | undefined>(cb: (data: T) => ResultInput<B, E>): Result<B, E> {
     return new Result(() => {
       if (this.#error !== undefined) {
         throw this.#error;
@@ -78,7 +78,7 @@ export default class Result<T, Err extends Error | undefined = undefined> {
       if (this.#data !== undefined) {
         return cb(this.#data);
       }
-      return this.#data!;
+      return undefined;
     });
   }
 }
