@@ -19,3 +19,10 @@
 
 1. `npm run example:for-each`
 2. Открыть в браузере страницу по адресу [http://localhost:1234/](http://localhost:1234/)
+
+
+## TODO
+
+- 5.5
+- 7.2, 7.3
+- 8.3
