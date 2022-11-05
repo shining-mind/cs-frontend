@@ -25,6 +25,30 @@ describe('Result', () => {
     });
   });
 
+  test('should map result inside the result', () => {
+    expect.assertions(3);
+    const result = new Result(() => 10);
+    const mappedResult = result
+      .map((number) => new Result(() => number * 2))
+      .map((result2) => new Result(() => result2));
+    mappedResult.then((result1) => {
+      expect(result1).toBeInstanceOf(Result);
+      result1.then((result2) => {
+        expect(result2).toBeInstanceOf(Result);
+        expect(result2.data).toEqual(20);
+      });
+    });
+  });
+
+  test('map should not throw on result with error', () => {
+    expect.assertions(1);
+    Result.error(2)
+      .map((v) => v)
+      .catch((error) => {
+        expect(error.message).toEqual('2');
+      });
+  });
+
   test('should bind error result', () => {
     expect.assertions(3);
     new Result(() => 10)

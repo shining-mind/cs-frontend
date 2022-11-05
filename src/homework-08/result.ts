@@ -6,26 +6,26 @@ export default class Result<T, Err extends Error | undefined = undefined> {
 
   #error?: Err;
 
-  constructor(getInput: () => ResultInput<T | undefined, Err>) {
+  get data(): T | undefined {
+    if (this.#error !== undefined) {
+      throw this.#error;
+    }
+    return this.#data;
+  }
+
+  get error(): Err | undefined {
+    return this.#error;
+  }
+
+  constructor(getInput: () => T) {
     try {
-      const input = getInput();
-      if (input instanceof Result) {
-        input
-          .then((value) => {
-            this.#data = value;
-          })
-          .catch((error) => {
-            this.#error = error;
-          });
-      } else {
-        this.#data = input;
-      }
+      this.#data = getInput();
     } catch (err) {
       this.#error = (err instanceof Error ? err : new Error(String(err))) as Err;
     }
   }
 
-  static ok<T>(data: T): Result<T> {
+  static ok<U>(data: U): Result<U> {
     return new Result(() => data);
   }
 
@@ -35,33 +35,30 @@ export default class Result<T, Err extends Error | undefined = undefined> {
     });
   }
 
-  catch<R>(cb: (error: Err) => ResultInput<R, Err>): Result<R | T, Err> {
-    return new Result(() => {
-      if (this.#error !== undefined) {
-        return cb(this.#error);
-      }
-      return this.#data!;
-    });
-  }
-
-  then<R>(cb: (data?: T) => ResultInput<R, Err>): Result<R, Err> {
+  then<U>(cb: (data: T) => ResultInput<U, Err>): Result<U | undefined, Err> {
     return new Result(() => {
       if (this.#error !== undefined) {
         throw this.#error;
       }
-      return cb(this.#data);
+      return Result.unwrap(cb(this.#data!));
     });
   }
 
-  map<R>(cb: (data: T) => R): Result<R> {
+  catch<U>(cb: (error: Err) => ResultInput<U, Err>): Result<U | T | undefined, Err> {
+    return new Result(() => {
+      if (this.#error !== undefined) {
+        return Result.unwrap(cb(this.#error));
+      }
+      return this.#data;
+    });
+  }
+
+  map<R>(cb: (data: T) => R): Result<R, Err> {
     return new Result(() => {
       if (this.#error !== undefined) {
         throw this.#error;
       }
-      if (this.#data !== undefined) {
-        return cb(this.#data);
-      }
-      return undefined;
+      return cb(this.#data!);
     });
   }
 
@@ -70,15 +67,30 @@ export default class Result<T, Err extends Error | undefined = undefined> {
    * @param cb
    * @returns
    */
-  bind<B, E extends Error | undefined>(cb: (data: T) => ResultInput<B, E>): Result<B, E> {
+  bind<U, E extends Error | undefined>(
+    cb: (data: T) => ResultInput<U, E>,
+  ): Result<U, E> {
     return new Result(() => {
       if (this.#error !== undefined) {
         throw this.#error;
       }
       if (this.#data !== undefined) {
-        return cb(this.#data);
+        return Result.unwrap(cb(this.#data));
       }
-      return undefined;
+      throw new Error('Data is undefined');
     });
+  }
+
+  static unwrap<U, E extends Error | undefined>(result: ResultInput<U, E>): U {
+    if (result instanceof Result) {
+      if (result.error !== undefined) {
+        throw result.error;
+      }
+      if (result.data !== undefined) {
+        return result.data;
+      }
+      throw new Error('Data is undefined');
+    }
+    return result;
   }
 }
