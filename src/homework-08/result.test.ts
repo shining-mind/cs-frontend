@@ -25,7 +25,7 @@ describe('Result', () => {
     });
   });
 
-  test('should map result to another result', () => {
+  test('should catch runtime error', () => {
     expect.assertions(2);
     new Result(() => 2)
       .map((x) => `${x}`)
