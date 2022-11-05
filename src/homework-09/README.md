@@ -18,3 +18,4 @@
 
 - Реализована функция `sleep`
 - Реализована функция `timeout`
+- Реализованы функциии `setImmediate` и `clearImmediate` на базе `WeakMap` и `queueMicrotask`.
