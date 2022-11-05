@@ -25,6 +25,20 @@ describe('Result', () => {
     });
   });
 
+  test('should map result to another result', () => {
+    expect.assertions(2);
+    new Result(() => 2)
+      .map((x) => `${x}`)
+      .map(() => JSON.parse("{'a':1}"))
+      .catch((error) => {
+        expect(error).toBeInstanceOf(Error);
+        return 1;
+      })
+      .then((x) => {
+        expect(x).toEqual(1);
+      });
+  });
+
   test('should map result inside the result', () => {
     expect.assertions(3);
     const result = new Result(() => 10);
@@ -45,7 +59,9 @@ describe('Result', () => {
     Result.error(2)
       .map((v) => v)
       .catch((error) => {
-        expect(error.message).toEqual('2');
+        if (error instanceof Error) {
+          expect(error.message).toEqual('2');
+        }
       });
   });
 
@@ -54,8 +70,10 @@ describe('Result', () => {
     new Result(() => 10)
       .bind((el) => Result.error(el))
       .catch((error) => {
-        expect(error).toBeInstanceOf(Error);
-        expect(error.message).toEqual('10');
+        if (error instanceof Error) {
+          expect(error).toBeInstanceOf(Error);
+          expect(error.message).toEqual('10');
+        }
       })
       .then(() => {
         expect(true).toBeTruthy();
@@ -80,8 +98,10 @@ describe('Result', () => {
       .map((el) => el * 2)
       .bind((el) => Result.error(el))
       .catch((error) => {
-        expect(error).toBeInstanceOf(Error);
-        expect(error.message).toEqual('20');
+        if (error instanceof Error) {
+          expect(error).toBeInstanceOf(Error);
+          expect(error.message).toEqual('20');
+        }
       })
       .then(() => {
         expect(true).toBeTruthy();

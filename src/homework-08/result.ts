@@ -44,7 +44,9 @@ export default class Result<T, Err extends Error | undefined = undefined> {
     });
   }
 
-  catch<U>(cb: (error: Err) => ResultInput<U, Err>): Result<U | T | undefined, Err> {
+  catch<U = never, E extends Error | undefined = undefined>(
+    cb: (error: unknown) => ResultInput<U, E>,
+  ): Result<T | U | undefined, E> {
     return new Result(() => {
       if (this.#error !== undefined) {
         return Result.unwrap(cb(this.#error));
