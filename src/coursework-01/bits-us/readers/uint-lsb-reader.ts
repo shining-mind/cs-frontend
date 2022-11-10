@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import skipBitsLSB from '../utils/skip-bits-lsb';
-import takeBits from '../utils/take-bits';
+import takeBitsLSB from '../utils/take-bits-lsb';
 
 const BITS_IN_BYTE = 8;
 
@@ -98,10 +98,10 @@ export default class UintLSBReader {
         if (bitsRead > this.bitRemainder) {
           bitsRead = this.bitRemainder;
         }
-        currentBits = takeBits(currentBits, bitsRead);
+        currentBits = takeBitsLSB(currentBits, bitsRead);
         this.bitRemainder -= bitsRead;
       } else {
-        currentBits = takeBits(this.byte, bitsRead, BITS_IN_BYTE);
+        currentBits = takeBitsLSB(this.byte, bitsRead, BITS_IN_BYTE);
         this.bitRemainder = BITS_IN_BYTE - bitsRead;
       }
       bits -= bitsRead;

@@ -4,7 +4,7 @@
  * @param size Size of the mask
  * @returns Bit mask
  */
-export default function takeBits(int: number, take: number, size: number = 8) {
+export default function takeBitsLSB(int: number, take: number, size: number = 8) {
   if (take > size) {
     throw new TypeError('Take offset should be less than mask size');
   }
