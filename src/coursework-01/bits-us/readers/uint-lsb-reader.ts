@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import skipBits from '../utils/skip-bits';
+import skipBitsLSB from '../utils/skip-bits-lsb';
 import takeBits from '../utils/take-bits';
 
 const BITS_IN_BYTE = 8;
@@ -93,7 +93,7 @@ export default class UintLSBReader {
       let bitsRead = Math.min(BITS_IN_BYTE, bits);
       // Read reamining bits from current byte
       if (this.bitRemainder > 0) {
-        currentBits = skipBits(this.byte, BITS_IN_BYTE - this.bitRemainder, BITS_IN_BYTE);
+        currentBits = skipBitsLSB(this.byte, BITS_IN_BYTE - this.bitRemainder, BITS_IN_BYTE);
         // Prevent overlow: if we want to read more than we can, change the amount of bits to read
         if (bitsRead > this.bitRemainder) {
           bitsRead = this.bitRemainder;
