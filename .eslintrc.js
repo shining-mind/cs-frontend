@@ -25,7 +25,7 @@ module.exports = {
       },
     },
     {
-      files: ['./src/coursework-01/bits-reader/**/*.ts'],
+      files: ['./src/coursework-01/bits-us/**/*.ts'],
       rules: {
         'no-bitwise': 'off',
       }

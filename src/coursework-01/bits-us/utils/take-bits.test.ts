@@ -1,4 +1,4 @@
-import takeBits from './takeBits';
+import takeBits from './take-bits';
 
 describe('bits-reader', () => {
   describe('takeBits', () => {

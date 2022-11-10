@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
-import skipBits from './utils/skipBits';
-import takeBits from './utils/takeBits';
+import skipBits from '../utils/skip-bits';
+import takeBits from '../utils/take-bits';
 
 const BITS_IN_BYTE = 8;
 
@@ -18,7 +18,7 @@ const BITS_IN_BYTE = 8;
  * b |= ReadBits(1) << 1;
  * ```
  */
-export default class UintBitsReader {
+export default class UintLSBReader {
   /**
    * Uint 8 array view of the buffer
    */
@@ -38,6 +38,9 @@ export default class UintBitsReader {
     this.buffer = buffer;
   }
 
+  /**
+   * Getter for current byte
+   */
   get byte(): number | undefined {
     return this.buffer[this.position];
   }
@@ -47,11 +50,19 @@ export default class UintBitsReader {
    * @param offset
    * @param resetRemainder Reset the bit remainder
    */
-  seek(offset: number, resetRemainder = false) {
+  seek(offset: number, resetRemainder: boolean = false): void {
     this.position += offset;
     if (resetRemainder) {
       this.bitRemainder = 0;
     }
+  }
+
+  /**
+   * Move to the specified byte with bit remainder reset
+   * @param offset
+   */
+  seekWithReset(offset: number): void {
+    this.seek(offset, true);
   }
 
   /**
@@ -64,7 +75,7 @@ export default class UintBitsReader {
 
   /**
    * Read bits
-   * @param bits
+   * @param bits Number of bits to read
    * @returns Uint
    */
   read(bits: number): number {
@@ -78,9 +89,12 @@ export default class UintBitsReader {
         throw new Error('Reached bitstream end');
       }
       let currentBits = 0;
-      let bitsRead = bits >= BITS_IN_BYTE ? BITS_IN_BYTE : bits;
+      // Max 8 bits can be read per iteration
+      let bitsRead = Math.min(BITS_IN_BYTE, bits);
+      // Read reamining bits from current byte
       if (this.bitRemainder > 0) {
         currentBits = skipBits(this.byte, BITS_IN_BYTE - this.bitRemainder, BITS_IN_BYTE);
+        // Prevent overlow: if we want to read more than we can, change the amount of bits to read
         if (bitsRead > this.bitRemainder) {
           bitsRead = this.bitRemainder;
         }
@@ -101,8 +115,22 @@ export default class UintBitsReader {
     return result;
   }
 
+  /**
+   * @returns Iterator on the bits
+   */
+  [Symbol.iterator](): IterableIterator<number> {
+    return this.values(1);
+  }
+
+  /**
+   * Iterate N-bit numbers
+   * @param bits N-bit number
+   * @returns Iterator on the N-bit numbers
+   * @throws {TypeError} If total bit count can't be devided by N-bits
+   */
   values(bits: number): IterableIterator<number> {
-    const instance = this;
+    // Create new instance, because current position must be preserved
+    const instance = new UintLSBReader(this.buffer);
     if ((this.buffer.byteLength * BITS_IN_BYTE) % bits !== 0) {
       throw new TypeError(`Bytes can't be devided by ${bits} bits`);
     }
@@ -114,8 +142,6 @@ export default class UintBitsReader {
         if (instance.byte !== undefined) {
           return { value: instance.read(bits), done: false };
         }
-        // rewind bitstream on iterator end
-        instance.rewind();
         return { value: undefined, done: true };
       },
     };

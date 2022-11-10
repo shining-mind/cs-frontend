@@ -1,4 +1,4 @@
-import skipBits from './skipBits';
+import skipBits from './skip-bits';
 
 describe('bits-reader', () => {
   describe('skipBits', () => {
