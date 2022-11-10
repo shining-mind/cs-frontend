@@ -1,7 +1,7 @@
 import takeBits from './take-bits-lsb';
 
-describe('bits-reader', () => {
-  describe('takeBits', () => {
+describe('bits-us', () => {
+  describe('takeBitsLSB', () => {
     test('take bits for a byte', () => {
       expect(takeBits(0b11111111, 0, 8)).toEqual(0b0);
       expect(takeBits(0b00000001, 1, 8)).toEqual(0b1);
