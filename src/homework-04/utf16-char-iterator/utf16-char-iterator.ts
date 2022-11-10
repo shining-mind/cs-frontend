@@ -1,6 +1,6 @@
 // @see https://www.rfc-editor.org/rfc/rfc2781#section-2.2
 
-import takeBits from '../../coursework-01/bits-reader/utils/takeBits';
+import takeBits from '../../coursework-01/bits-us/utils/take-bits';
 
 export default function utf16CharIterator(str: string): IterableIterator<string> {
   let i = 0;
