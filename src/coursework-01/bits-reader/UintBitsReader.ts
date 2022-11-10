@@ -20,14 +20,9 @@ const BITS_IN_BYTE = 8;
  */
 export default class UintBitsReader {
   /**
-   * Raw data
-   */
-  protected buffer: ArrayBuffer;
-
-  /**
    * Uint 8 array view of the buffer
    */
-  protected uint8View: Uint8Array;
+  protected buffer: Uint8Array;
 
   /**
    * Current byte position
@@ -39,13 +34,12 @@ export default class UintBitsReader {
    */
   protected bitRemainder: number = 0;
 
-  constructor(buffer: ArrayBuffer) {
+  constructor(buffer: Uint8Array) {
     this.buffer = buffer;
-    this.uint8View = new Uint8Array(buffer);
   }
 
   get byte(): number | undefined {
-    return this.uint8View[this.position];
+    return this.buffer[this.position];
   }
 
   /**
@@ -109,7 +103,7 @@ export default class UintBitsReader {
 
   values(bits: number): IterableIterator<number> {
     const instance = this;
-    if ((this.uint8View.byteLength * BITS_IN_BYTE) % bits !== 0) {
+    if ((this.buffer.byteLength * BITS_IN_BYTE) % bits !== 0) {
       throw new TypeError(`Bytes can't be devided by ${bits} bits`);
     }
     return {
