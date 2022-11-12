@@ -32,6 +32,10 @@ describe('bits-us', () => {
       expect(takeBits(0xFFFFFFFF, 32, 32)).toEqual(2 ** 32 - 1);
     });
 
+    test('take 53 bits', () => {
+      expect(takeBits(Number.MAX_SAFE_INTEGER, 53, 53)).toEqual(2 ** 53 - 1);
+    });
+
     test('should throw if size arg is less than the bit count of the number', () => {
       expect(() => takeBits(0b101111, 3, 3)).toThrow(TypeError);
     });
