@@ -1,4 +1,4 @@
-# Утилиты для чтения бит
+# Утилиты для чтения бинарных данных
 
 
 ## UintLSBReader - чтение потока бит в порядке LSB
@@ -19,14 +19,24 @@ b = ReadBits(1);
 b |= ReadBits(1) << 1;
 ```
 
-## Быстрый старт
+### Примеры
 
-**Чтение данных из потока по 1 биту за раз:**
+**Чтение 14 битных чисел:**
+
+```JS
+const buffer = new Uint8Array([0x8f, 0x01, 0x4b, 0x10]);
+const bitReader = new UintLSBReader(buffer);
+bitReader.read(14) // 399
+bitReader.read(14) // 300
+
+```
+
+**Чтение по 1 биту за раз:**
 
 ```JS
 // создаём буфер с двумя байтами
 const buffer = new Uint8Array([0b10011001, 0b10100001]);
-const bitReader = new UintBitsReader(buffer);
+const bitReader = new UintLSBReader(buffer);
 // читаем данные по одному биту за раз
 bitReader.read(1) // 1
 bitReader.read(1) // 0
@@ -51,7 +61,7 @@ bitReader.read(1) // 1
 
 ```JS
 const buffer = new Uint8Array([0b10011001, 0b10100001]);
-const bitReader = new UintBitsReader(buffer);
+const bitReader = new UintLSBReader(buffer);
 bitReader.read(1) // 1
 bitReader.read(1) // 0
 bitReader.read(1) // 0
@@ -73,7 +83,7 @@ bitReader.seekWithReset(1)
 
 ```JS
 const buffer = new Uint8Array([0b10100111]);
-const bitReader = new UintBitsReader(buffer);
+const bitReader = new UintLSBReader(buffer);
 const numbers = Array.from(bitReader); // [1, 1, 1, 0, 0, 1, 0, 1]
 
 ```
@@ -82,12 +92,26 @@ const numbers = Array.from(bitReader); // [1, 1, 1, 0, 0, 1, 0, 1]
 
 ```JS
 const buffer = new Uint8Array([0b11100111, 0b01111001, 0b10011110]);
-const bitReader = new UintBitsReader(buffer);
+const bitReader = new UintLSBReader(buffer);
 const numbers = Array.from(bitReader.values(3)); // [0b111, 0b100, 0b111, 0b100, 0b111, 0b100, 0b111, 0b100]
 
 ```
 
-## Ограничения
+### API
+
+**Свойства**
+
+`byte` - текущий байт
+
+**Методы**
+
+- `seek(n)` - перейти вперед на N байт
+- `seekWithReset(n)` - перейти вперед на N байт и сбросить остаток бит на ноль
+- `rewind()` - вернуть указатель на первый байт и сбросить остаток бит на ноль
+- `read(n)` - прочитать N битовое беззнаковое число
+- `values(n)` - получить итератор по N битовым беззнаковым числам
+
+### Ограничения
 
 1. UintLSBReader работает только с целыми положительными числами
-2. Нельзя считать число больше 32bit из-за ограничений побитовых операторов в JS
+2. Нельзя считать число больше 53bit из-за ограничений IEEE-754
