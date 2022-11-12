@@ -4,6 +4,8 @@ import takeBitsLSB from '../utils/take-bits-lsb';
 
 const BITS_IN_BYTE = 8;
 
+type Uint = number | bigint;
+
 /**
  * This class is used for reading bitstream.
  * It reads bytes in the natural order and bits in LSB order.
@@ -78,10 +80,10 @@ export default class UintLSBReader {
    * @param bits Number of bits to read
    * @returns Uint
    */
-  read(bits: number): number {
-    let result = 0;
+  read(bits: number): Uint {
+    let result: Uint = 0;
     let resultSize = 0;
-    if (bits < 1 || bits > 32) {
+    if (bits < 1 || bits > 64) {
       throw new TypeError('Unsupported bit count');
     }
     while (bits > 0) {
@@ -104,8 +106,18 @@ export default class UintLSBReader {
         currentBits = takeBitsLSB(this.byte, bitsRead, BITS_IN_BYTE);
         this.bitRemainder = BITS_IN_BYTE - bitsRead;
       }
+      // Result can't be represented as number type
+      // due to bitwise operation using signed int 32
+      // convert to bigint
+      if (resultSize === 24 && this.byte > 0x7f) {
+        result = BigInt(result);
+      }
       bits -= bitsRead;
-      result |= currentBits << resultSize;
+      if (typeof result === 'bigint') {
+        result |= BigInt(currentBits) << BigInt(resultSize);
+      } else {
+        result |= currentBits << resultSize;
+      }
       resultSize += bitsRead;
       // Go to next byte if nothing left
       if (this.bitRemainder === 0) {
@@ -118,7 +130,7 @@ export default class UintLSBReader {
   /**
    * @returns Iterator on the bits
    */
-  [Symbol.iterator](): IterableIterator<number> {
+  [Symbol.iterator](): IterableIterator<Uint> {
     return this.values(1);
   }
 
@@ -128,7 +140,7 @@ export default class UintLSBReader {
    * @returns Iterator on the N-bit numbers
    * @throws {TypeError} If total bit count can't be devided by N-bits
    */
-  values(bits: number): IterableIterator<number> {
+  values(bits: number): IterableIterator<Uint> {
     // Create new instance, because current position must be preserved
     const instance = new UintLSBReader(this.buffer);
     if ((this.buffer.byteLength * BITS_IN_BYTE) % bits !== 0) {
