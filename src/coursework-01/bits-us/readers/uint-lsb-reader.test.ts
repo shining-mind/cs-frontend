@@ -65,18 +65,18 @@ describe('bits-us', () => {
       expect(new UintLSBReader(new Uint8Array([0x98, 0x3f, 0x01, 0x00])).read(32)).toEqual(81816);
     });
 
-    test('should read numbers greater than max uint31 as bigint', () => {
+    test('should read numbers greater than max uint31', () => {
       expect(new UintLSBReader(new Uint8Array([0xff, 0xff, 0xff, 0x7f])).read(32))
         .toEqual((2 ** 31 - 1));
       expect(new UintLSBReader(new Uint8Array([0x00, 0x00, 0x00, 0x80])).read(32))
-        .toEqual(BigInt(2 ** 31));
+        .toEqual(2 ** 31);
       expect(new UintLSBReader(new Uint8Array([0xff, 0xff, 0xff, 0xff])).read(32))
-        .toEqual(BigInt(2 ** 32 - 1));
+        .toEqual(2 ** 32 - 1);
     });
 
-    test('should read uint64', () => {
+    test('should read uint53', () => {
       const buffer = new Uint8Array([0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]);
-      expect(new UintLSBReader(buffer).read(64)).toEqual(18_446_744_073_709_551_615n);
+      expect(new UintLSBReader(buffer).read(53)).toEqual(2 ** 53 - 1);
     });
 
     test('rewind', () => {
@@ -116,7 +116,7 @@ describe('bits-us', () => {
     });
 
     test('should throw for wrong bit count', () => {
-      expect(() => new UintLSBReader(new Uint8Array([0xff])).read(65)).toThrowError('Unsupported bit count');
+      expect(() => new UintLSBReader(new Uint8Array([0xff])).read(54)).toThrowError('Unsupported bit count');
     });
 
     test('should throw on position overflow', () => {
