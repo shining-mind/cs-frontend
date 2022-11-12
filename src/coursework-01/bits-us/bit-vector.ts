@@ -79,7 +79,7 @@ export default class BitVector implements Iterable<Bit> {
       throw new RangeError(`Can't set bit at position ${index}`);
     }
     const word = this.getWord(index);
-    const bitMask = (1 << this.#wordSize - (index % this.#length) - 1);
+    const bitMask = (1 << this.#wordSize - (index % this.#wordSize) - 1);
     if (value === 1) {
       this.setWord(index, word | bitMask);
     } else {
