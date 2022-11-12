@@ -26,7 +26,7 @@ describe('bits-us', () => {
   describe('BitVector', () => {
     testCaseGeneral(8);
     testCaseGeneral(16);
-    // testCaseGeneral(32);
+    testCaseGeneral(32);
 
     test('should grow correctly allocating bytes', () => {
       const vec = new BitVector(3);
