@@ -1,10 +1,9 @@
 /* eslint-disable no-param-reassign */
 import skipBitsLSB from '../utils/skip-bits-lsb';
 import takeBitsLSB from '../utils/take-bits-lsb';
+import { SafeUint } from '../types';
 
 const BITS_IN_BYTE = 8;
-
-type Uint = number | bigint;
 
 /**
  * This class is used for reading bitstream.
@@ -80,8 +79,8 @@ export default class UintLSBReader {
    * @param bits Number of bits to read
    * @returns Uint
    */
-  read(bits: number): Uint {
-    let result: Uint = 0;
+  read(bits: number): SafeUint {
+    let result: SafeUint = 0;
     let resultSize = 0;
     if (bits < 1 || bits > 64) {
       throw new TypeError('Unsupported bit count');
@@ -130,7 +129,7 @@ export default class UintLSBReader {
   /**
    * @returns Iterator on the bits
    */
-  [Symbol.iterator](): IterableIterator<Uint> {
+  [Symbol.iterator](): IterableIterator<SafeUint> {
     return this.values(1);
   }
 
@@ -140,7 +139,7 @@ export default class UintLSBReader {
    * @returns Iterator on the N-bit numbers
    * @throws {TypeError} If total bit count can't be devided by N-bits
    */
-  values(bits: number): IterableIterator<Uint> {
+  values(bits: number): IterableIterator<SafeUint> {
     // Create new instance, because current position must be preserved
     const instance = new UintLSBReader(this.buffer);
     if ((this.buffer.byteLength * BITS_IN_BYTE) % bits !== 0) {
