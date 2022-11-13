@@ -121,8 +121,10 @@ export default class BitVector implements Iterable<Bit> {
   }
 
   protected grow() {
-    // TODO: prevent int32 overflow
-    this.#capacity *= 2;
+    if (this.#capacity >= Number.MAX_SAFE_INTEGER) {
+      throw new Error('Maximum capacity of the BitVector reached');
+    }
+    this.#capacity = this.#capacity > 2 ** 26 ? Number.MAX_SAFE_INTEGER : this.#capacity * 2;
     // Grow only if allocated bits count is less than capacity
     if (this.buffer.byteLength * 8 < this.#capacity) {
       const currentBuffer = this.buffer;
