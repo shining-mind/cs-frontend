@@ -1,15 +1,14 @@
 /**
  * @param int
  * @param take Take N bits starting from LSB
- * @param size Size of the mask
  * @returns Bit mask
  */
-export default function takeBitsLSB(int: number, take: number, size: number = 8) {
-  if (take > size) {
-    throw new TypeError('Take offset should be less than mask size');
+export default function takeBitsLSB(int: number, take: number): number {
+  if (take > 53) {
+    throw new TypeError("Can't take more than 53 bits");
   }
-  if (size > 32) {
-    throw new TypeError("Can't read more than 32 bits");
+  if (int > 2 ** 31 - 1) {
+    return Number(BigInt(int) & BigInt(2 ** take - 1));
   }
   return int & (2 ** take - 1);
 }
