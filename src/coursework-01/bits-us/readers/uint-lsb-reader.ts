@@ -102,7 +102,7 @@ export default class UintLSBReader {
         currentBits = takeBitsLSB(currentBits, bitsRead);
         this.bitRemainder -= bitsRead;
       } else {
-        currentBits = takeBitsLSB(this.byte, bitsRead, BITS_IN_BYTE);
+        currentBits = takeBitsLSB(this.byte, bitsRead);
         this.bitRemainder = BITS_IN_BYTE - bitsRead;
       }
       // Result can't be represented as number type
