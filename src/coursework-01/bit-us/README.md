@@ -51,7 +51,34 @@ Array.from(vec) // [0, 1, 1]
 - `get(n)` - получить значение N-го бита
 - `toBlob()` - преобразовать вектор в `Blob`. Первые 4 байта выделены под длину вектора, остальные - под данные. Доступно только для вектора из 8 битных слов.
 
-### Битовые маски (TODO)
+### Битовые маски (bit-field)
+
+```JS
+const userPermissions = new BitFieldFactory('read', 'write', 'edit');
+const bob = userPermissions.create('read', 'write');
+
+bob.has('read', 'write') // true
+bob.has('read', 'write', 'edit') // false
+bob.any('read', 'write', 'edit') // true
+
+```
+
+#### API
+
+**Класс: BitFieldFactory**
+
+**Методы**
+
+- `create(...flags)` - создать битовую маску с данными флагами
+- `getFlagValue(flag)` - получить числовое значение для флага
+
+**Класс: BitField**
+
+**Методы**
+
+- `has(...flags)` - проверить заданы ли все флаги в маске
+- `can(...flags)` - синоним `has`
+- `any(...flags)` - проверить есть ли какой-либо из флагов в маске
 
 ## Вспомогательные функции:
 
