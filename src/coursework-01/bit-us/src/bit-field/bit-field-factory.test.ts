@@ -15,5 +15,15 @@ describe('bit-us', () => {
       expect(bob.any('edit')).toBeFalsy();
       expect(bob.any('read', 'write', 'edit')).toBeTruthy();
     });
+
+    test('should return integer value of the applied flags', () => {
+      expect(bob.valueOf()).toEqual(1 | 2);
+      const admin = userPermissions.create('read', 'write', 'edit');
+      expect(admin.valueOf()).toEqual(1 | 2 | 4);
+    });
+
+    test('should throw if unknown flag is passed', () => {
+      expect(() => bob.can('delete')).toThrowError('Unknown flag: delete');
+    });
   });
 });

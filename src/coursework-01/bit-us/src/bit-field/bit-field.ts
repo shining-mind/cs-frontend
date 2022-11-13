@@ -31,4 +31,8 @@ export default class BitField {
     }
     return false;
   }
+
+  valueOf() {
+    return this.#value;
+  }
 }
