@@ -3,7 +3,7 @@
  * @param take Take N bits starting from LSB
  * @returns Bit mask
  */
-export default function takeBitsLSB(int: number, take: number): number {
+export default function takeBits(int: number, take: number): number {
   if (take > 53) {
     throw new TypeError("Can't take more than 53 bits");
   }

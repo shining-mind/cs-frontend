@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
-import skipBitsLSB from '../utils/skip-bits-lsb';
-import takeBitsLSB from '../utils/take-bits-lsb';
+import { skipBits, takeBits } from '../utils';
 import type { SafeUint } from '../types';
 
 const BITS_IN_BYTE = 8;
@@ -94,15 +93,15 @@ export default class UintLSBReader {
       let bitsRead = Math.min(BITS_IN_BYTE, bits);
       // Read reamining bits from current byte
       if (this.bitRemainder > 0) {
-        currentBits = skipBitsLSB(this.byte, BITS_IN_BYTE - this.bitRemainder, BITS_IN_BYTE);
+        currentBits = skipBits(this.byte, BITS_IN_BYTE - this.bitRemainder, BITS_IN_BYTE);
         // Prevent overlow: if we want to read more than we can, change the amount of bits to read
         if (bitsRead > this.bitRemainder) {
           bitsRead = this.bitRemainder;
         }
-        currentBits = takeBitsLSB(currentBits, bitsRead);
+        currentBits = takeBits(currentBits, bitsRead);
         this.bitRemainder -= bitsRead;
       } else {
-        currentBits = takeBitsLSB(this.byte, bitsRead);
+        currentBits = takeBits(this.byte, bitsRead);
         this.bitRemainder = BITS_IN_BYTE - bitsRead;
       }
       // Result can't be represented as number type
