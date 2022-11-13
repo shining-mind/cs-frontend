@@ -1,19 +1,17 @@
-import type { Bit, UintArray } from './types';
+import type { Bit, UintArray, BitWordSize } from './types';
 import skipBits from './utils/skip-bits';
 import takeBits from './utils/take-bits';
-
-type WordSize = 8 | 16 | 32;
 
 export default class BitVector implements Iterable<Bit> {
   #capacity: number;
 
   #length: number = 0;
 
-  #wordSize: WordSize;
+  #wordSize: BitWordSize;
 
   protected buffer: UintArray;
 
-  constructor(capacity: number, wordSize: WordSize = 8) {
+  constructor(capacity: number, wordSize: BitWordSize = 8) {
     this.#capacity = capacity;
     this.#wordSize = wordSize;
     this.buffer = this.createBuffer(capacity);

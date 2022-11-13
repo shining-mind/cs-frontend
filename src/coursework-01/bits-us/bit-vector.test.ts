@@ -2,8 +2,9 @@ import iterRandom, { randomInt } from '../../homework-06/iter-random';
 import iterTake from '../../homework-06/iter-take';
 import BitVector from './bit-vector';
 import UintLSBReader from './readers/uint-lsb-reader';
+import type { BitWordSize } from './types';
 
-function testCaseGeneral(wordSize: 8 | 16 | 32) {
+function testCaseGeneral(wordSize: BitWordSize) {
   test(`all operations should work with ${wordSize} bit word`, () => {
     const vec = new BitVector(1, wordSize);
     const n = wordSize * randomInt(1, 12);
@@ -23,9 +24,9 @@ function testCaseGeneral(wordSize: 8 | 16 | 32) {
   });
 }
 
-function testToBlob(wordSize: 8 | 16 | 32) {
+function testToBlob(wordSize: BitWordSize) {
   test(`should convert to blob with ${wordSize} bit word`, async () => {
-    const vec = new BitVector(1, wordSize as 8 | 16 | 32);
+    const vec = new BitVector(1, wordSize);
     for (let i = 0; i < 21; i += 1) {
       vec.push(i % 2 === 0 ? 1 : 0);
     }
