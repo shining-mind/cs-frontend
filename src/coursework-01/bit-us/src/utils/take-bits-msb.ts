@@ -4,7 +4,7 @@
  * @param size Size of the bit mask - should be equal to bit count of int (8, 16, 32, etc.)
  * @returns Bits as number
  */
-export default function takeBits(int: number, take: number, size: number = 8): number {
+export default function takeBitsMSB(int: number, take: number, size: number = 8): number {
   if (take > size) {
     throw new TypeError('Take should be less than mask size');
   }

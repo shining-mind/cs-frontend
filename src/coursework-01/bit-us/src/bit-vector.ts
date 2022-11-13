@@ -1,5 +1,5 @@
 import type { Bit, UintArray, BitWordSize } from './types';
-import { skipBits, takeBits } from './utils';
+import { skipBitsMSB, takeBitsMSB } from './utils';
 
 export default class BitVector implements Iterable<Bit> {
   #capacity: number;
@@ -92,9 +92,12 @@ export default class BitVector implements Iterable<Bit> {
     if (index >= this.#length) {
       throw new RangeError(`Can't get bit at position ${index}`);
     }
-    const word = this.getWord(index);
     const offset = index % this.#wordSize;
-    return takeBits(skipBits(word, offset, this.#wordSize), 1, this.#wordSize - offset) as Bit;
+    return takeBitsMSB(
+      skipBitsMSB(this.getWord(index), offset, this.#wordSize),
+      1,
+      this.#wordSize - offset,
+    ) as Bit;
   }
 
   toBlob(): Blob {
