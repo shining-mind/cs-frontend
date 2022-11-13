@@ -1,6 +1,5 @@
 import type { Bit, UintArray, BitWordSize } from './types';
-import skipBits from './utils/skip-bits';
-import takeBits from './utils/take-bits';
+import { skipBits, takeBits } from './utils';
 
 export default class BitVector implements Iterable<Bit> {
   #capacity: number;
@@ -77,7 +76,7 @@ export default class BitVector implements Iterable<Bit> {
       throw new RangeError(`Can't set bit at position ${index}`);
     }
     const word = this.getWord(index);
-    const bitMask = (1 << this.#wordSize - (index % this.#wordSize) - 1);
+    const bitMask = this.getBitMask(index);
     if (value === 1) {
       this.setWord(index, word | bitMask);
     } else {
@@ -108,6 +107,10 @@ export default class BitVector implements Iterable<Bit> {
     const view = new Uint8Array(Math.ceil(this.#length / 8));
     view.set(this.buffer.slice(0, Math.ceil(this.#length / 8)));
     return new Blob([new Uint32Array([this.#length]), view]);
+  }
+
+  protected getBitMask(index: number) {
+    return (1 << this.#wordSize - (index % this.#wordSize) - 1);
   }
 
   protected getWord(index: number): number {
