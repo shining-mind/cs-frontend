@@ -100,6 +100,18 @@ export default class BitVector implements Iterable<Bit> {
     return takeBits(skipBits(word, offset, this.#wordSize), 1, this.#wordSize - offset) as Bit;
   }
 
+  toBlob(): Blob {
+    if (this.#length > 2 ** 32 - 1) {
+      throw new Error('Can not get blob, vector length exceeds 2 ** 32 - 1');
+    }
+    if (this.#wordSize > 8) {
+      throw new Error(`toBlob for ${this.#wordSize} bit word not implemented`);
+    }
+    const view = new Uint8Array(Math.ceil(this.#length / 8));
+    view.set(this.buffer.slice(0, Math.ceil(this.#length / 8)));
+    return new Blob([new Uint32Array([this.#length]), view]);
+  }
+
   protected getWord(index: number): number {
     return this.buffer[Math.floor(index / this.#wordSize)];
   }

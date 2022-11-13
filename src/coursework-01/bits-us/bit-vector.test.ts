@@ -1,6 +1,7 @@
 import iterRandom, { randomInt } from '../../homework-06/iter-random';
 import iterTake from '../../homework-06/iter-take';
 import BitVector from './bit-vector';
+import UintLSBReader from './readers/uint-lsb-reader';
 
 function testCaseGeneral(wordSize: 8 | 16 | 32) {
   test(`all operations should work with ${wordSize} bit word`, () => {
@@ -22,11 +23,35 @@ function testCaseGeneral(wordSize: 8 | 16 | 32) {
   });
 }
 
+function testToBlob(wordSize: 8 | 16 | 32) {
+  test(`should convert to blob with ${wordSize} bit word`, async () => {
+    const vec = new BitVector(1, wordSize as 8 | 16 | 32);
+    for (let i = 0; i < 21; i += 1) {
+      vec.push(i % 2 === 0 ? 1 : 0);
+    }
+    expect(vec.bytesAllocated).toEqual(4);
+    expect(Array.from(vec)).toEqual(Array(21).fill(0).map((_, i) => (i % 2 === 0 ? 1 : 0)));
+    const blob = vec.toBlob();
+    const uint8Array = new Uint8Array(await blob.arrayBuffer());
+    // Should return only filled data
+    expect(uint8Array.byteLength).toEqual(4 + 3);
+    // Vector length
+    expect(new UintLSBReader(uint8Array).read(32)).toEqual(21);
+    // Data of the vector
+    expect(uint8Array[4]).toEqual(0b10101010);
+    expect(uint8Array[5]).toEqual(0b10101010);
+    expect(uint8Array[6]).toEqual(0b10101000);
+  });
+}
+
 describe('bits-us', () => {
   describe('BitVector', () => {
     testCaseGeneral(8);
     testCaseGeneral(16);
     testCaseGeneral(32);
+    testToBlob(8);
+    // testToBlob(16);
+    // testToBlob(32);
 
     test('should grow correctly allocating bytes', () => {
       const vec = new BitVector(3);
