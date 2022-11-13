@@ -15,7 +15,7 @@
 
 ## Чтение бинарных данных:
 
-- `UintLSBReader` - чтение бинарного потока в LSB порядке (реализация ReadBits из спецификации webp), [подробнее](readers/README.md#uintlsbreader---чтение-потока-бит-в-порядке-lsb)
+- `UintLSBReader` - чтение бинарного потока в LSB порядке (реализация ReadBits из спецификации webp), [подробнее](src/readers/README.md#uintlsbreader---чтение-потока-бит-в-порядке-lsb)
 
 ## Структуры:
 
