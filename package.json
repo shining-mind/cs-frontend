@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "coverage": "jest --coverage",
     "build": "npm run clean && tsc",
     "clean": "del-cli ./lib/*",
     "example:webp-canvas": "parcel ./examples/webp-canvas/index.html --dist-dir ./examples/dist/webp-canvas",

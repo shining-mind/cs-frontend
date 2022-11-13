@@ -2,7 +2,7 @@
  * @param {number} [min]
  * @param {number} [max]
  */
-function randomInt(min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER) {
+export function randomInt(min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER) {
   // получить случайное число от (min - 0.5) до (max + 0.5) и округлить
   return Math.round(min - 0.5 + Math.random() * (max - min + 1));
 }

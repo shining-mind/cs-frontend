@@ -1,6 +1,7 @@
 // @see https://www.rfc-editor.org/rfc/rfc2781#section-2.2
 
-import takeBits from '../../coursework-01/bits-reader/utils/takeBits';
+// eslint-disable-next-line import/no-relative-packages
+import takeBits from '../../coursework-01/bit-us/src/utils/take-bits';
 
 export default function utf16CharIterator(str: string): IterableIterator<string> {
   let i = 0;
@@ -26,7 +27,7 @@ export default function utf16CharIterator(str: string): IterableIterator<string>
           // otherwise it will be treated as w1 for next char
           i += 1;
           // eslint-disable-next-line no-bitwise
-          const codePoint = (takeBits(w1, 10, 16) << 10) | takeBits(w2, 10, 16);
+          const codePoint = (takeBits(w1, 10) << 10) | takeBits(w2, 10);
           return { done: false, value: String.fromCodePoint(codePoint + 0x10000) };
         }
       }
