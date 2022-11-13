@@ -52,7 +52,7 @@ export default class BitVector implements Iterable<Bit> {
   /**
    * Bytes allocated
    */
-  get bytesAllocated() {
+  get byteLength() {
     return this.buffer.byteLength;
   }
 

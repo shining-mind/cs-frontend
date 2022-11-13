@@ -29,7 +29,7 @@ function testToBlob(wordSize: 8 | 16 | 32) {
     for (let i = 0; i < 21; i += 1) {
       vec.push(i % 2 === 0 ? 1 : 0);
     }
-    expect(vec.bytesAllocated).toEqual(4);
+    expect(vec.byteLength).toEqual(4);
     expect(Array.from(vec)).toEqual(Array(21).fill(0).map((_, i) => (i % 2 === 0 ? 1 : 0)));
     const blob = vec.toBlob();
     const uint8Array = new Uint8Array(await blob.arrayBuffer());
@@ -61,14 +61,14 @@ describe('bits-us', () => {
       expect(vec.capacity).toEqual(3);
       vec.push(1);
       expect(vec.capacity).toEqual(6);
-      expect(vec.bytesAllocated).toEqual(1);
+      expect(vec.byteLength).toEqual(1);
       for (let i = 0; i < 2; i += 1) {
         vec.push(1);
       }
       expect(vec.capacity).toEqual(6);
       vec.push(1);
       expect(vec.capacity).toEqual(12);
-      expect(vec.bytesAllocated).toEqual(2);
+      expect(vec.byteLength).toEqual(2);
     });
 
     test('should set bit value', () => {
@@ -82,6 +82,7 @@ describe('bits-us', () => {
       expect(vec.get(2)).toEqual(1);
       vec.set(0, 0);
       expect(vec.get(0)).toEqual(0);
+      expect(Array.from(vec)).toEqual([0, 1, 1]);
     });
 
     test('should iterate over bits', () => {
@@ -108,7 +109,7 @@ describe('bits-us', () => {
         });
         expect(vec.length).toEqual(size);
         expect(vec.capacity).toEqual(expectedCapacity);
-        expect(vec.bytesAllocated).toEqual(Math.ceil(expectedCapacity / 8));
+        expect(vec.byteLength).toEqual(Math.ceil(expectedCapacity / 8));
         array1.forEach((value, index) => {
           expect(vec.get(index)).toEqual(value);
         });
