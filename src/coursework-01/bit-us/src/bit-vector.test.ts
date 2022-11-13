@@ -46,7 +46,7 @@ function testToBlob(wordSize: BitWordSize) {
   });
 }
 
-describe('bits-us', () => {
+describe('bit-us', () => {
   describe('BitVector', () => {
     testCaseGeneral(8);
     testCaseGeneral(16);

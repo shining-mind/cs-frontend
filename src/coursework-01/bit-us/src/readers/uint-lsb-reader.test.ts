@@ -1,6 +1,6 @@
 import UintLSBReader from './uint-lsb-reader';
 
-describe('bits-us', () => {
+describe('bit-us', () => {
   describe('UintLSBReader', () => {
     test('read 14 bits numbers', () => {
       const bitReader = new UintLSBReader(new Uint8Array([0x8f, 0x01, 0x4b, 0x10]));

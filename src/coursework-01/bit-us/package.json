@@ -1,7 +1,7 @@
 {
-  "name": "bits-us",
+  "name": "bit-us",
   "version": "0.1.0",
-  "description": "Bits utilities and structures",
+  "description": "Bit utilities and structures",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [

@@ -1,6 +1,6 @@
 import skipBits from './skip-bits';
 
-describe('bits-us', () => {
+describe('bit-us', () => {
   describe('skipBits', () => {
     test('skip bits from random size input', () => {
       expect(skipBits(0b101111, 2, 8)).toEqual(0b101111);

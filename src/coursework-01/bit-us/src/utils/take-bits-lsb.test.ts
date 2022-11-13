@@ -1,6 +1,6 @@
 import takeBitsLSB from './take-bits-lsb';
 
-describe('bits-us', () => {
+describe('bit-us', () => {
   describe('takeBitsLSB', () => {
     test('take bits from random size input', () => {
       expect(takeBitsLSB(0b101111, 2)).toEqual(0b11);
