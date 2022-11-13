@@ -72,6 +72,10 @@ describe('bits-us', () => {
         .toEqual(2 ** 31);
       expect(new UintLSBReader(new Uint8Array([0xff, 0xff, 0xff, 0xff])).read(32))
         .toEqual(2 ** 32 - 1);
+      expect(new UintLSBReader(new Uint8Array([0xff, 0xff, 0xff, 0x0f, 0xff])).read(40))
+        .toEqual(1095485095935);
+      expect(new UintLSBReader(new Uint8Array([0xff, 0xff, 0xff, 0x0f, 0x00, 0x7f])).read(48))
+        .toEqual(139638245163007);
     });
 
     test('should read uint53', () => {

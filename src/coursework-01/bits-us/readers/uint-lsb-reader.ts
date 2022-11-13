@@ -108,7 +108,7 @@ export default class UintLSBReader {
       // Result can't be represented as number type
       // due to bitwise operation using signed int 32
       // convert to bigint
-      if (resultSize === 24 && this.byte > 0x7f) {
+      if (resultSize === 24 && (this.byte > 0x7f || bits > 8)) {
         result = BigInt(result);
       }
       bits -= bitsRead;
