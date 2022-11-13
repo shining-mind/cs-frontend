@@ -1,0 +1,43 @@
+{
+  "name": "bits-us",
+  "version": "0.1.0",
+  "description": "Bits utilities and structures",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/"
+  ],
+  "scripts": {
+    "build": "npm run clean && tsc",
+    "clean": "del-cli ./lib/*",
+    "test": "jest"
+  },
+  "keywords": [
+    "take",
+    "skip",
+    "bits",
+    "bit",
+    "vector",
+    "map",
+    "reader"
+  ],
+  "author": "Artem Shinkaruk <artasend@gmail.com>",
+  "license": "ISC",
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "collectCoverageFrom": [
+      "./src/**/*.ts"
+    ]
+  }
+}

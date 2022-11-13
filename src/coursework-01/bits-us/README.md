@@ -2,7 +2,18 @@
 
 Рабочее название библиотеки **bits-us** (bits utilities and structures)
 
-Чтение бинарных данных:
+## Установка из репозитория
+
+1. `git clone https://github.com/shining-mind/cs-frontend.git`
+2. `cd cs-frontend`
+3. `npm i`
+4. `cd src/coursework-01/bits-us`
+5. `npm run build`
+6. `npm pack`
+7. Перейти в директорию проекта в который надо установить пакет
+8. `npm i /path/to/package/bits-us-0.1.0.tgz`
+
+## Чтение бинарных данных:
 
 - `UintLSBReader` - чтение бинарного потока в LSB порядке (реализация ReadBits из спецификации webp), [подробнее](readers/README.md#uintlsbreader---чтение-потока-бит-в-порядке-lsb)
 

@@ -1,5 +1,6 @@
-import iterRandom, { randomInt } from '../../homework-06/iter-random';
-import iterTake from '../../homework-06/iter-take';
+/* eslint-disable import/no-relative-packages */
+import iterRandom, { randomInt } from '../../../homework-06/iter-random';
+import iterTake from '../../../homework-06/iter-take';
 import BitVector from './bit-vector';
 import UintLSBReader from './readers/uint-lsb-reader';
 import type { BitWordSize } from './types';
