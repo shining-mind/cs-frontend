@@ -21,12 +21,28 @@ enum SyncPromiseState {
   Rejected
 }
 
+function safeCall(fn: Function, reject: RejectFunction) {
+  try {
+    fn();
+  } catch (error) {
+    reject(error);
+  }
+}
+
+function cast<T>(value: any): T {
+  return value;
+}
+
 export class SyncPromise<T> implements Promise<T> {
   #state: SyncPromiseState = SyncPromiseState.Pending;
 
   #data?: T;
 
   #reason?: any;
+
+  #fulfilledHandlers: Onfulfilled<T, unknown>[] = [];
+
+  #rejectedHandlers: Onrejected<unknown>[] = [];
 
   constructor(executor: (resolve: ResolveFunction<T>, reject: RejectFunction) => void) {
     const resolve: ResolveFunction<T> = (data) => {
@@ -39,17 +55,16 @@ export class SyncPromise<T> implements Promise<T> {
     const reject: RejectFunction = (reason) => {
       this.#setReason(reason);
     };
-    try {
-      executor(resolve, reject);
-    } catch (error) {
-      this.#setReason(error);
-    }
+    safeCall(() => executor(resolve, reject), reject);
   }
 
   #setData(data: T): void {
     if (this.#state === SyncPromiseState.Pending) {
       this.#data = data;
       this.#state = SyncPromiseState.Fulfilled;
+      this.#fulfilledHandlers.forEach((handler) => {
+        handler(this.#data!);
+      });
     }
   }
 
@@ -57,7 +72,13 @@ export class SyncPromise<T> implements Promise<T> {
     if (this.#state === SyncPromiseState.Pending) {
       this.#reason = reason;
       this.#state = SyncPromiseState.Rejected;
-      // TODO: should it throw if there is no catch or then?
+      if (this.#rejectedHandlers.length > 0) {
+        this.#rejectedHandlers.forEach((handler) => {
+          handler(this.#reason);
+        });
+      } else {
+        throw this.#reason;
+      }
     }
   }
 
@@ -67,41 +88,79 @@ export class SyncPromise<T> implements Promise<T> {
     });
   }
 
+  static reject<T = never>(reason: any): SyncPromise<T> {
+    return new SyncPromise(() => {
+      throw reason;
+    });
+  }
+
   then<TResult1 = T, TResult2 = never>(
     onfulfilled?: Onfulfilled<T, TResult1> | null | undefined,
     onrejected?: Onrejected<TResult2> | null | undefined
   ): Promise<TResult1 | TResult2> {
-    // Fulfilled
-    if (this.#state === SyncPromiseState.Fulfilled) {
-      return typeof onfulfilled === 'function'
-        ? SyncPromise.resolve(onfulfilled(this.#data!))
-        : SyncPromise.resolve(this.#data! as TResult1);
-    }
-    // Rejected
-    if (this.#state === SyncPromiseState.Rejected) {
-      if (typeof onrejected === 'function') {
-        return SyncPromise.resolve(onrejected(this.#reason));
-      }
-      throw this.#reason!;
-    }
-    // Pending
     return new SyncPromise<TResult1 | TResult2>((resolve, reject) => {
+      if (this.#state === SyncPromiseState.Fulfilled) {
+        if (typeof onfulfilled === 'function') {
+          safeCall(() => resolve(onfulfilled(this.#data!)), reject);
+        } else {
+          resolve(this.#data! as TResult1);
+        }
+        return;
+      }
+      if (this.#state === SyncPromiseState.Rejected) {
+        if (typeof onrejected === 'function') {
+          safeCall(() => resolve(onrejected(this.#reason)), reject);
+        } else {
+          reject(this.#reason!);
+        }
+        return;
+      }
+      // Pending
       if (typeof onfulfilled === 'function') {
-          resolve(this.then(onfulfilled));
+        this.#fulfilledHandlers.push((data) => {
+          safeCall(() => resolve(onfulfilled(data)), reject);
+        });
+      } else {
+        this.#fulfilledHandlers.push((data) => {
+          resolve(cast<TResult1>(data));
+        });
       }
       if (typeof onrejected === 'function') {
-        setTimeout(() => {
-          resolve(this.catch(onrejected) as PromiseLike<TResult1 | TResult2>);
-        }, 0);
+        this.#rejectedHandlers.push((reason) => {
+          safeCall(() => resolve(onrejected(reason)), reject);
+        });
       } else {
-        this.catch(reject);
+        this.#rejectedHandlers.push((reason) => {
+          reject(reason);
+        });
       }
     });
   }
 
-  catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | null | undefined): Promise<T | TResult> {
-    return new SyncPromise((resolve) => {
-      resolve(this.catch(onrejected) as PromiseLike<T | TResult>);
+  catch<TResult = never>(
+    onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | null | undefined
+  ): Promise<T | TResult> {
+    return new SyncPromise((resolve, reject) => {
+      if (this.#state === SyncPromiseState.Fulfilled) {
+        return resolve(this.#data!);
+      }
+      if (this.#state === SyncPromiseState.Rejected) {
+        if (typeof onrejected === 'function') {
+          safeCall(() => resolve(onrejected(this.#reason)), reject);
+        } else {
+          reject(this.#reason!);
+        }
+        return;
+      }
+      // Pending
+      if (typeof onrejected === 'function') {
+        this.#rejectedHandlers.push((reason) => {
+          safeCall(() => resolve(onrejected(reason)), reject);
+        });
+      }
+      this.#fulfilledHandlers.push((data) => {
+        resolve(data);
+      });
     });
   }
 
