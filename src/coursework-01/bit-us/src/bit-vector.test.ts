@@ -56,6 +56,22 @@ describe('bit-us', () => {
     // testToBlob(16);
     // testToBlob(32);
 
+    test('32 bit word vector should correctly set MSB bit', () => {
+      const vec = new BitVector(64, 32);
+      for (let i = 0; i < 64; i += 1) {
+        vec.push(i % 2 === 0 ? 0 : 1);
+      }
+      expect(vec.get(0)).toEqual(0);
+      expect(vec.get(1)).toEqual(1);
+      expect(vec.get(62)).toEqual(0);
+      expect(vec.get(63)).toEqual(1);
+      vec.set(0, 1);
+      expect(vec.byteLength).toEqual(8);
+      const expected = Array(64).fill(0).map((_, i) => (i % 2 === 0 ? 0 : 1));
+      expected[0] = 1;
+      expect(Array.from(vec)).toEqual(expected);
+    });
+
     test('should grow correctly allocating bytes', () => {
       const vec = new BitVector(3);
       for (let i = 0; i < 3; i += 1) {
