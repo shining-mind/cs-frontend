@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus */
-import { SyncPromise } from './sync-promise';
+import SyncPromise from './sync-promise';
 
 function assertAsyncResult<T>(
   time: number,

@@ -1,10 +1,8 @@
-/* eslint-disable */
-
 function isPromiseLike<T>(data: T | PromiseLike<T>): data is PromiseLike<T> {
   return typeof data === 'object' && data !== null && (data as PromiseLike<T>).then !== undefined;
 }
 
-type PromiseInput<T> = T | PromiseLike<T>; 
+type PromiseInput<T> = T | PromiseLike<T>;
 
 type ResolveFunction<T> = (data: PromiseInput<T>) => void;
 
@@ -14,11 +12,10 @@ type Onfulfilled<T, TResult> = (value: T) => TResult | PromiseLike<TResult>;
 
 type Onrejected<TResult> = (reason: any) => TResult | PromiseLike<TResult>;
 
-
 enum SyncPromiseState {
   Pending,
   Fulfilled,
-  Rejected
+  Rejected,
 }
 
 function safeCall(fn: Function, reject: RejectFunction) {
@@ -33,7 +30,7 @@ function cast<T>(value: any): T {
   return value;
 }
 
-export class SyncPromise<T> implements Promise<T> {
+export default class SyncPromise<T> implements Promise<T> {
   #state: SyncPromiseState = SyncPromiseState.Pending;
 
   #data?: T;
@@ -96,7 +93,7 @@ export class SyncPromise<T> implements Promise<T> {
 
   then<TResult1 = T, TResult2 = never>(
     onfulfilled?: Onfulfilled<T, TResult1> | null | undefined,
-    onrejected?: Onrejected<TResult2> | null | undefined
+    onrejected?: Onrejected<TResult2> | null | undefined,
   ): Promise<TResult1 | TResult2> {
     return new SyncPromise<TResult1 | TResult2>((resolve, reject) => {
       if (this.#state === SyncPromiseState.Fulfilled) {
@@ -138,11 +135,12 @@ export class SyncPromise<T> implements Promise<T> {
   }
 
   catch<TResult = never>(
-    onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | null | undefined
+    onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | null | undefined,
   ): Promise<T | TResult> {
     return new SyncPromise((resolve, reject) => {
       if (this.#state === SyncPromiseState.Fulfilled) {
-        return resolve(this.#data!);
+        resolve(this.#data!);
+        return;
       }
       if (this.#state === SyncPromiseState.Rejected) {
         if (typeof onrejected === 'function') {
@@ -165,7 +163,7 @@ export class SyncPromise<T> implements Promise<T> {
   }
 
   finally(onfinally?: (() => void) | null | undefined): Promise<T> {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 
   [Symbol.toStringTag]: string = '[object SyncPromise]';
