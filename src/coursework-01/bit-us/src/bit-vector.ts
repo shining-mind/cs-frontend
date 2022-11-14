@@ -67,6 +67,12 @@ export default class BitVector implements Iterable<Bit> {
     return this.#length;
   }
 
+  pop(): Bit {
+    const value = this.get(this.#length - 1);
+    this.#length -= 1;
+    return value;
+  }
+
   /**
    * @param index Bit position
    * @param value Bit value

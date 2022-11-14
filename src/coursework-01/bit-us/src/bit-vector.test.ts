@@ -52,6 +52,7 @@ describe('bit-us', () => {
     testCaseGeneral(16);
     testCaseGeneral(32);
     testToBlob(8);
+    // TODO: implement
     // testToBlob(16);
     // testToBlob(32);
 
@@ -85,6 +86,18 @@ describe('bit-us', () => {
       vec.set(0, 0);
       expect(vec.get(0)).toEqual(0);
       expect(Array.from(vec)).toEqual([0, 1, 1]);
+    });
+
+    test('should pop and push correctly', () => {
+      const vec = new BitVector(3);
+      vec.push(1);
+      vec.push(1);
+      vec.push(1);
+      expect(vec.pop()).toEqual(1);
+      expect(() => vec.get(2)).toThrowError(RangeError);
+      expect(() => vec.set(2, 1)).toThrowError(RangeError);
+      expect(vec.push(0)).toEqual(3);
+      expect(vec.get(2)).toEqual(0);
     });
 
     test('should iterate over bits', () => {
