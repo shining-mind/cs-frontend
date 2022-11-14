@@ -10,7 +10,10 @@ export default class BitVector implements Iterable<Bit> {
 
   protected buffer: UintArray;
 
-  constructor(capacity: number, wordSize: BitWordSize = 8) {
+  constructor(capacity: number = 0, wordSize: BitWordSize = 8) {
+    if (capacity < 0 || Math.ceil(capacity) !== capacity) {
+      throw new TypeError('Capacity must be whole positive number');
+    }
     this.#capacity = capacity;
     this.#wordSize = wordSize;
     this.buffer = this.createBuffer(capacity);
@@ -134,7 +137,9 @@ export default class BitVector implements Iterable<Bit> {
     if (this.#capacity >= Number.MAX_SAFE_INTEGER) {
       throw new Error('Maximum capacity of the BitVector reached');
     }
-    this.#capacity = this.#capacity > 2 ** 26 ? Number.MAX_SAFE_INTEGER : this.#capacity * 2;
+    this.#capacity = this.#capacity > 2 ** 26
+      ? Number.MAX_SAFE_INTEGER
+      : (this.#capacity || 1) * 2;
     // Grow only if allocated bits count is less than capacity
     if (this.buffer.byteLength * 8 < this.#capacity) {
       const currentBuffer = this.buffer;

@@ -56,6 +56,14 @@ describe('bit-us', () => {
     // testToBlob(16);
     // testToBlob(32);
 
+    test('bit vector with 0 capacity should grow', () => {
+      const vec = new BitVector(0);
+      for (let i = 0; i < 16; i += 1) {
+        vec.push(1);
+      }
+      expect(Array.from(vec)).toEqual(Array(16).fill(1));
+    });
+
     test('32 bit word vector should correctly set MSB bit', () => {
       const vec = new BitVector(64, 32);
       for (let i = 0; i < 64; i += 1) {
@@ -160,6 +168,11 @@ describe('bit-us', () => {
       const vec = new BitVector(1);
       expect(() => vec.get(1)).toThrowError(RangeError);
       expect(() => vec.set(1, 0)).toThrowError(RangeError);
+    });
+
+    test('should throw error on wrong capacity', () => {
+      expect(() => new BitVector(-1)).toThrowError(TypeError);
+      expect(() => new BitVector(3.14)).toThrowError(TypeError);
     });
   });
 });
