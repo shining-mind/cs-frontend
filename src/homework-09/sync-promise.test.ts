@@ -183,4 +183,51 @@ describe('SyncPromise', () => {
         done();
       });
   });
+
+  describe('finally', () => {
+    test('should return new promise on finally', (done) => {
+      const promise = new SyncPromise<number>((resolve) => {
+        setTimeout(() => resolve(1), 5);
+      });
+      const newPromise = promise.finally(() => {});
+      assertAsyncResultAfter5MS(newPromise, 1, done);
+    });
+
+    test('sync should wrap error in finally', (done) => {
+      expect.assertions(2);
+      const promise = SyncPromise.resolve(1);
+      promise.finally(() => {
+        throw new Error();
+      })
+        .catch((error) => {
+          expect(error).toBeInstanceOf(Error);
+          promise.then((value) => {
+            expect(value).toEqual(1);
+            done();
+          });
+        });
+    });
+
+    test('async should wrap error in finally', (done) => {
+      expect.assertions(1);
+      new SyncPromise<number>((resolve) => {
+        setTimeout(() => resolve(1), 5);
+      })
+        .finally(() => {
+          throw new Error();
+        })
+        .catch((error) => {
+          expect(error).toBeInstanceOf(Error);
+          done();
+        });
+    });
+
+    test('should return same promise if finally has no callback', (done) => {
+      expect.assertions(1);
+      SyncPromise.resolve(1).finally().then((value) => {
+        expect(value).toEqual(1);
+        done();
+      });
+    });
+  });
 });

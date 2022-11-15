@@ -41,6 +41,8 @@ export default class SyncPromise<T> implements Promise<T> {
 
   #rejectedHandlers: Onrejected<unknown>[] = [];
 
+  #finallyHandlers: (() => void)[] = [];
+
   constructor(executor: (resolve: ResolveFunction<T>, reject: RejectFunction) => void) {
     const resolve: ResolveFunction<T> = (data) => {
       if (isPromiseLike(data)) {
@@ -62,6 +64,7 @@ export default class SyncPromise<T> implements Promise<T> {
       this.#fulfilledHandlers.forEach((handler) => {
         handler(this.#data!);
       });
+      this.#callFinally();
     }
   }
 
@@ -73,10 +76,18 @@ export default class SyncPromise<T> implements Promise<T> {
         this.#rejectedHandlers.forEach((handler) => {
           handler(this.#reason);
         });
+        this.#callFinally();
       } else {
+        this.#callFinally();
         throw this.#reason;
       }
     }
+  }
+
+  #callFinally() {
+    this.#finallyHandlers.forEach((handler) => {
+      handler();
+    });
   }
 
   static resolve<T>(data: T | PromiseLike<T>): SyncPromise<T> {
@@ -163,7 +174,23 @@ export default class SyncPromise<T> implements Promise<T> {
   }
 
   finally(onfinally?: (() => void) | null | undefined): Promise<T> {
-    throw new Error('Method not implemented.');
+    return new SyncPromise((resolve, reject) => {
+      const handler = () => {
+        if (typeof onfinally === 'function') {
+          safeCall(() => onfinally(), reject);
+        }
+        if (this.#state === SyncPromiseState.Fulfilled) {
+          resolve(this.#data!);
+        } else {
+          reject(this.#reason);
+        }
+      };
+      if (this.#state === SyncPromiseState.Pending) {
+        this.#finallyHandlers.push(handler);
+      } else {
+        handler();
+      }
+    });
   }
 
   [Symbol.toStringTag]: string = '[object SyncPromise]';
