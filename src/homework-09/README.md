@@ -20,3 +20,5 @@
 - Реализована функция `timeout`
 - Реализованы функциии `setImmediate` и `clearImmediate` на базе `WeakMap` и `queueMicrotask`.
 - Реализована функция `promisify`
+- Реализован класс `SyncPromise`
+- Реализована функция `promiseAllLimit`
