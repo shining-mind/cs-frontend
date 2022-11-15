@@ -18,7 +18,7 @@ describe('promiseAllLimit', () => {
     () => logger<number>(sleep(30).then(() => 1), 1),
     () => logger<number>(sleep(50).then(() => 2), 2),
     () => logger<number>(sleep(20).then(() => 3), 3),
-    () => logger<number>(sleep(150).then(() => 4), 4),
+    () => logger<number>(sleep(200).then(() => 4), 4),
     () => logger<number>(sleep(20).then(() => 5), 5),
     () => logger<number>(sleep(20).then(() => 6), 6),
     () => logger<number>(sleep(20).then(() => 7), 7),
@@ -33,7 +33,7 @@ describe('promiseAllLimit', () => {
     const start = Date.now();
     const results = await promiseAllLimit(functions, 1);
     expect(results).toEqual(Array.from<number | string>(new IterRange(1, 8)).concat(['done']));
-    expect(Date.now() - start).toBeGreaterThanOrEqual(350);
+    expect(Date.now() - start).toBeGreaterThanOrEqual(400);
     expect(logs).toEqual(Array(9).fill('').flatMap((_, i) => [`Start fn${i + 1}`, `End fn${i + 1}`]));
   });
 
@@ -41,8 +41,8 @@ describe('promiseAllLimit', () => {
     const start = Date.now();
     const results = await promiseAllLimit(functions, 2);
     expect(results).toEqual(Array.from<number | string>(new IterRange(1, 8)).concat(['done']));
-    expect(Date.now() - start).toBeGreaterThanOrEqual(200);
-    expect(Date.now() - start).toBeLessThanOrEqual(350);
+    expect(Date.now() - start).toBeGreaterThanOrEqual(250);
+    expect(Date.now() - start).toBeLessThanOrEqual(400);
     expect(logs).toEqual([
       'Start fn1', // pending - fn1
       'Start fn2', // pending - fn1, fn2
@@ -60,8 +60,8 @@ describe('promiseAllLimit', () => {
       'Start fn8', // pending - fn4, fn8
       'End fn8', // pending - fn4
       'Start fn9', // pending - fn4, fn9
-      'End fn4', // pending - fn9
-      'End fn9', // pending - None
+      'End fn9', // pending - fn4
+      'End fn4', // pending - None
     ]);
   });
 
