@@ -17,6 +17,9 @@ function promisify<T1, T2, T3, T4, TResult>(
 ): (arg1: T1, arg2: T2, arg3: T3, arg4: T4) => Promise<TResult>;
 function promisify<T1, T2, T3, T4, T5, TResult>(
   fn: (arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5, cb: ThunkFunction<TResult>) => void,
+): (arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5) => Promise<TResult>;
+function promisify<T1, T2, T3, T4, T5, TResult>(
+  fn: (arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5, cb: ThunkFunction<TResult>) => void,
 ): (arg1: T1, arg2: T2, arg3: T3, arg4: T4, arg5: T5) => Promise<TResult> {
   return (...args) => new Promise((resolve, reject) => {
     fn(...args, (error, result) => {
