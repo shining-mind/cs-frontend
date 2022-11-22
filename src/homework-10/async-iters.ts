@@ -1,3 +1,6 @@
+type AsyncIterableValue<T extends AsyncIterable<any>[]> = T extends AsyncIterable<infer V>[]
+  ? V : unknown;
+
 export function filter<T>(
   iterable: AsyncIterable<T>,
   predicate: (item: T) => boolean,
@@ -43,6 +46,34 @@ export function map<T, R>(
           return { value: undefined, done };
         }
         return { value: mapFn(value), done };
+      });
+    },
+  };
+}
+
+export function seq<T extends AsyncIterable<any>[]>(
+  ...iterables: T
+): AsyncIterableIterator<AsyncIterableValue<T>> {
+  let i = 0;
+  let it: AsyncIterator<any> = iterables.length > 0
+    ? iterables[i][Symbol.asyncIterator]()
+    : { next: () => (Promise.resolve({ value: undefined, done: true })) };
+  return {
+    [Symbol.asyncIterator]() {
+      return this;
+    },
+    next() {
+      const promise = it.next();
+      return promise.then(({ value, done }) => {
+        if (done) {
+          i += 1;
+          if (i >= iterables.length) {
+            return { value: undefined, done: true };
+          }
+          it = iterables[i][Symbol.asyncIterator]();
+          return this.next();
+        }
+        return { value, done: false };
       });
     },
   };

@@ -1,11 +1,7 @@
-import { randomInt } from '../homework-06/iter-random';
-import sleep from '../homework-09/sleep';
-import { filter, map } from './async-iters';
+import { filter, map, seq } from './async-iters';
 
 async function* asyncGenerator(): AsyncGenerator<number> {
   for (let i = 0; i < 10; i += 1) {
-    // eslint-disable-next-line no-await-in-loop
-    await sleep(randomInt(5, 10));
     yield i;
   }
 }
@@ -27,5 +23,19 @@ describe('async-iters -> map', () => {
       array.push(item);
     }
     expect(array).toEqual(['0', '2', '4', '6', '8', '10', '12', '14', '16', '18']);
+  });
+});
+
+describe('async-iters -> seq', () => {
+  test('should seq async iterator', async () => {
+    const iterable = seq(
+      filter(asyncGenerator(), (i) => i < 3),
+      filter(asyncGenerator(), (i) => i > 6),
+    );
+    const array = [];
+    for await (const item of iterable) {
+      array.push(item);
+    }
+    expect(array).toEqual([0, 1, 2, 7, 8, 9]);
   });
 });
