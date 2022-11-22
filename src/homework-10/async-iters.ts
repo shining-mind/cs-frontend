@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/prefer-default-export
 export function filter<T>(
   iterable: AsyncIterable<T>,
   predicate: (item: T) => boolean,
@@ -23,6 +22,27 @@ export function filter<T>(
             resolve(this.next());
           });
         });
+      });
+    },
+  };
+}
+
+export function map<T, R>(
+  iterable: AsyncIterable<T>,
+  mapFn: (item: T) => R,
+): AsyncIterableIterator<R> {
+  const it = iterable[Symbol.asyncIterator]();
+  return {
+    [Symbol.asyncIterator]() {
+      return this;
+    },
+    next() {
+      const promise = it.next();
+      return promise.then(({ value, done }) => {
+        if (done) {
+          return { value: undefined, done };
+        }
+        return { value: mapFn(value), done };
       });
     },
   };
