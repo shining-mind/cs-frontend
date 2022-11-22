@@ -78,24 +78,16 @@ export function seq<T extends AsyncIterable<any>[]>(
     },
   };
 }
-
-export function take<T>(
+export async function* take<T>(
   iterable: AsyncIterable<T>,
   limit: number,
-): AsyncIterableIterator<T> {
-  const it = iterable[Symbol.asyncIterator]();
+): AsyncGenerator<T> {
   let i = 1;
-  return {
-    [Symbol.asyncIterator]() {
-      return this;
-    },
-    next() {
-      if (i > limit) {
-        // QUESTION should call it.return()?
-        return Promise.resolve({ value: undefined, done: true });
-      }
-      i += 1;
-      return it.next();
-    },
-  };
+  for await (const value of iterable) {
+    yield value;
+    i += 1;
+    if (i > limit) {
+      break;
+    }
+  }
 }
