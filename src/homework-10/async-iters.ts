@@ -78,6 +78,7 @@ export function seq<T extends AsyncIterable<any>[]>(
     },
   };
 }
+
 export async function* take<T>(
   iterable: AsyncIterable<T>,
   limit: number,
@@ -88,6 +89,52 @@ export async function* take<T>(
     i += 1;
     if (i > limit) {
       break;
+    }
+  }
+}
+
+export async function* every<T>(
+  iterable: AsyncIterable<T>,
+  predicate: (item: T) => boolean,
+): AsyncGenerator<T> {
+  for await (const value of iterable) {
+    if (!predicate(value)) {
+      break;
+    }
+    yield value;
+  }
+}
+
+export function any<T extends AsyncIterable<any>[]>(
+  ...iterables: T
+): AsyncIterableIterator<AsyncIterableValue<T>> {
+  const iterators = new Array<AsyncIterator<AsyncIterableValue<T>>>(iterables.length);
+  iterables.forEach((iterable, i) => {
+    iterators[i] = iterable[Symbol.asyncIterator]();
+  });
+  return {
+    [Symbol.asyncIterator]() {
+      return this;
+    },
+    next() {
+      return Promise.race(iterators.map((it) => it.next()));
+    },
+    return() {
+      return Promise.race(iterators.map((it) => (
+        typeof it.return === 'function' ? it.return() : { value: undefined as AsyncIterableValue<T>, done: true }
+      )));
+    },
+  };
+}
+
+export async function* repeat<T>(
+  action: () => AsyncIterable<T>,
+): AsyncGenerator<T> {
+  while (true) {
+    const iterable = action();
+    // eslint-disable-next-line no-await-in-loop
+    for await (const value of iterable) {
+      yield value;
     }
   }
 }
