@@ -1,4 +1,6 @@
-import { filter, map, seq } from './async-iters';
+import {
+  filter, map, seq, take,
+} from './async-iters';
 
 async function* asyncGenerator(): AsyncGenerator<number> {
   for (let i = 0; i < 10; i += 1) {
@@ -37,5 +39,15 @@ describe('async-iters -> seq', () => {
       array.push(item);
     }
     expect(array).toEqual([0, 1, 2, 7, 8, 9]);
+  });
+});
+
+describe('async-iters -> take', () => {
+  test('should take from async iterator', async () => {
+    const array = [];
+    for await (const item of take(asyncGenerator(), 3)) {
+      array.push(item);
+    }
+    expect(array).toEqual([0, 1, 2]);
   });
 });
