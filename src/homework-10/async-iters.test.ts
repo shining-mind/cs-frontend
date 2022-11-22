@@ -50,4 +50,12 @@ describe('async-iters -> take', () => {
     }
     expect(array).toEqual([0, 1, 2]);
   });
+
+  test('should take from async iterator only available values', async () => {
+    const array = [];
+    for await (const item of take(filter(asyncGenerator(), (x) => x < 3), 5)) {
+      array.push(item);
+    }
+    expect(array).toEqual([0, 1, 2]);
+  });
 });
