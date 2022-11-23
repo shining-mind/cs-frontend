@@ -31,14 +31,6 @@
     </div>
     <h2>Исходный код</h2>
     <pre>
-function getCoords(element) {
-  const box = element.getBoundingClientRect();
-  return {
-    top: box.top + window.scrollY,
-    left: box.left + window.scrollX,
-  };
-}
-
 const box = document.getElementById('box');
 const container = document.getElementById('container');
 const shiftX = box.offsetWidth / 2;
@@ -51,16 +43,16 @@ box.ondragstart = function() {
 (async () => {
   const dnd = repeat(() => filter(
     seq(
-      once(box, 'mousedown'),
+      once(box, 'pointerdown'),
       every(
         any(
-          on(document.body, 'mousemove'),
-          on(box, 'mouseup')
+          on(document.body, 'pointermove'),
+          on(box, 'pointerup')
         ),
-        (ev) => ev.type === 'mousemove',
+        (ev) => ev.type === 'pointermove',
       )
     ),
-    (ev) => ev.type === 'mousemove',
+    (ev) => ev.type === 'pointermove',
   ));
   for await (const ev of dnd) {
     const { top, left } = getCoords(container);

@@ -23,16 +23,16 @@ box.ondragstart = function() {
 (async () => {
   const dnd = repeat(() => filter(
     seq(
-      once(box, 'mousedown'),
+      once(box, 'pointerdown'),
       every(
         any(
-          on(document.body, 'mousemove'),
-          on(box, 'mouseup')
+          on(document.body, 'pointermove'),
+          on(box, 'pointerup')
         ),
-        (ev) => ev.type === 'mousemove',
+        (ev) => ev.type === 'pointermove',
       )
     ),
-    (ev) => ev.type === 'mousemove',
+    (ev) => ev.type === 'pointermove',
   ));
   for await (const ev of dnd) {
     const { top, left } = getCoords(container);

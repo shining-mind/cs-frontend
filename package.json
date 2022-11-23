@@ -2,7 +2,6 @@
   "name": "@shining-mind/cs-frontend",
   "version": "0.1.0",
   "description": "Домашние задания по курсу Computer Science in Frontend",
-  "main": "index.js",
   "scripts": {
     "test": "jest",
     "coverage": "jest --coverage",
@@ -10,7 +9,8 @@
     "clean": "del-cli ./lib/*",
     "example:webp-canvas": "parcel ./examples/webp-canvas/index.html --dist-dir ./examples/dist/webp-canvas",
     "example:for-each": "parcel ./examples/for-each/index.html --dist-dir ./examples/dist/for-each",
-    "example:async-iterators": "parcel ./examples/async-iterators/index.html --dist-dir ./examples/dist/async-iterators"
+    "example:async-iterators": "parcel ./examples/async-iterators/index.html --dist-dir ./examples/dist/async-iterators",
+    "example:build:async-iterators": "del-cli ./examples/dist/async-iterators/* && parcel build ./examples/async-iterators/index.html --dist-dir ./examples/dist/async-iterators"
   },
   "license": "ISC",
   "devDependencies": {
