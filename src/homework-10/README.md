@@ -15,3 +15,5 @@
 - Реализованы функции `on/once`
 - Реализованы функции `filter/map/seq/take`
 - Реализованы дополнительные функции: `every/any/repeat`
+- Реализована функция с частичным применением `onlyEvent`
+- Реализован [drag&drop](https://shining-mind.ru/cs-frontend/async-iterators/dnd.html)

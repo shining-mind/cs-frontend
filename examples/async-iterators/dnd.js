@@ -1,5 +1,6 @@
 import on from '../../lib/homework-10/on';
 import once from '../../lib/homework-10/once';
+import onlyEvent from '../../lib/homework-10/onlyEvent';
 import { filter, repeat, seq, any, every } from '../../lib/homework-10/async-iters';
 
 
@@ -29,10 +30,10 @@ box.ondragstart = function() {
           on(document.body, 'pointermove'),
           on(box, 'pointerup')
         ),
-        (ev) => ev.type === 'pointermove',
+        onlyEvent('pointermove'),
       )
     ),
-    (ev) => ev.type === 'pointermove',
+    onlyEvent('pointermove'),
   ));
   for await (const ev of dnd) {
     const { top, left } = getCoords(container);

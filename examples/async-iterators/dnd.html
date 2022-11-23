@@ -54,10 +54,10 @@ box.ondragstart = function() {
           on(document.body, 'pointermove'),
           on(box, 'pointerup')
         ),
-        (ev) => ev.type === 'pointermove',
+        onlyEvent('pointermove'),
       )
     ),
-    (ev) => ev.type === 'pointermove',
+    onlyEvent('pointermove'),
   ));
   for await (const ev of dnd) {
     const { top, left } = getCoords(container);
